@@ -1,0 +1,74 @@
+name: Release
+
+# Pushes to main publish a real GitHub Release (tag + packaged tarball).
+# Pull requests only build and validate, uploading the package as a
+# workflow artifact -- not a public Release. See the note at the bottom of
+# this file for why.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install zsh (for theme syntax check)
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Validate shell scripts
+        run: |
+          bash -n install.sh
+          bash -n package.sh
+          bash -n scripts/update-from-upstream.sh
+          zsh -n zsh-theme/beardeddiamond.zsh-theme
+
+      - name: Validate JSON manifests
+        run: |
+          python3 -m json.tool chrome-theme/manifest.json > /dev/null
+          python3 -m json.tool firefox-theme/manifest.json > /dev/null
+          python3 -m json.tool look-and-feel/org.kde.beardeddiamond.desktop/metadata.json > /dev/null
+
+      - name: Determine version
+        id: version
+        run: echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build package
+        run: ./package.sh "${{ steps.version.outputs.version }}"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BeardedDiamond-${{ steps.version.outputs.version }}
+          path: dist/*.tar.gz
+
+      - name: Create GitHub release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Bearded Diamond ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: dist/*.tar.gz
+
+# Why PRs don't get a real Release:
+#
+# `GITHUB_TOKEN` only gets write access on `push` events (and same-repo
+# pull requests); PRs from forks are read-only by design, so a `contents:
+# write` step would silently fail for exactly the PRs most likely to need
+# review. Using `pull_request_target` to work around that would run this
+# workflow with a *writable* token against the PR's own (untrusted) code --
+# a classic supply-chain hole. Publishing a public Release per PR is also
+# unusual for a repo like this: PR commits get force-pushed and PRs get
+# closed, so there's no stable point to hang a tagged release off of.
+#
+# If you do want a downloadable build per PR, the artifact uploaded above
+# is it -- open the PR's checks tab and grab it from the workflow run.
