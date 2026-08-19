@@ -85,6 +85,11 @@ git commit -m "Sync colors with upstream bearded-theme <short-sha>"
   manual re-port: diff the extension's `icons.json` / `icons/*.svg` against
   what's mapped in this repo (there's no script for this yet — the original
   mapping table lives only in this project's history, not in `scripts/`).
+  After re-porting, bump `icons/BEARDED_ICONS_VERSION` (just the version
+  string, e.g. `1.23.0`) to match the extension version you ported from --
+  `release.yml` reads this file to put the icon pack version in each
+  release's title/body, same as it reads `vendor/bearded-theme/package.json`
+  for the theme version.
 - Anything structural: if upstream renames/removes the VS Code color keys
   `scripts/palette.py` reads (e.g. `editor.background`,
   `terminal.ansiBlue`, `focusBorder` — see that file for the full list),
