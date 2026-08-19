@@ -1,6 +1,6 @@
 """
-Regenerates plymouth/beardeddiamond/: the .plymouth color config plus the
-watermark, throbber animation, and password-dialog images.
+Regenerates <theme>/plymouth/<id_lower>/: the .plymouth color config plus
+the watermark, throbber animation, and password-dialog images.
 """
 
 import os
@@ -10,10 +10,6 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import load_palette, plymouth_hex  # noqa: E402
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-THEME_DIR = os.path.join(REPO_ROOT, "plymouth", "beardeddiamond")
-PLYMOUTH_FILE = os.path.join(THEME_DIR, "beardeddiamond.plymouth")
-
 COLOR_KEYS = {
     "BackgroundStartColor": "bg_main",
     "BackgroundEndColor": "bg_button",
@@ -22,9 +18,24 @@ COLOR_KEYS = {
 }
 
 
-def update_plymouth_file(palette):
-    with open(PLYMOUTH_FILE) as f:
+def update_plymouth_file(palette, spec, plymouth_file):
+    with open(plymouth_file) as f:
         text = f.read()
+    text = re.sub(r"^Name=.*$", f"Name={spec.display_name}", text, count=1, flags=re.MULTILINE)
+    text = re.sub(
+        r"^Description=.*$",
+        f"Description=Boot splash generated to match the 'Bearded Theme {spec.upstream_name}' VS Code theme.",
+        text,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    text = re.sub(
+        r"^ImageDir=.*$",
+        f"ImageDir=/usr/share/plymouth/themes/{spec.id_lower}",
+        text,
+        count=1,
+        flags=re.MULTILINE,
+    )
     for key, palette_name in COLOR_KEYS.items():
         text = re.sub(
             rf"^{key}=.*$",
@@ -32,12 +43,12 @@ def update_plymouth_file(palette):
             text,
             flags=re.MULTILINE,
         )
-    with open(PLYMOUTH_FILE, "w") as f:
+    with open(plymouth_file, "w") as f:
         f.write(text)
-    print(f"wrote {PLYMOUTH_FILE}")
+    print(f"wrote {plymouth_file}")
 
 
-def regenerate_images(palette):
+def regenerate_images(palette, theme_dir):
     from PIL import Image, ImageDraw
 
     accent = palette["accent"]
@@ -63,7 +74,7 @@ def regenerate_images(palette):
     outline = palette["bg_titlebar"]
     for a, b in [(left, right), (left, top), (right, top), (left, bottom), (right, bottom)]:
         d.line([a, b], fill=outline, width=3)
-    img.save(os.path.join(THEME_DIR, "watermark.png"))
+    img.save(os.path.join(theme_dir, "watermark.png"))
 
     # throbber animation frames: rotating dashed ring
     N = 30
@@ -76,7 +87,7 @@ def regenerate_images(palette):
         fd.arc(bbox, 0, 360, fill=dim, width=8)
         fd.arc(bbox, angle0, angle0 + 90, fill=accent, width=8)
         fd.arc(bbox, angle0, angle0 + 18, fill=accent_light, width=8)
-        frame.save(os.path.join(THEME_DIR, f"throbber-{i + 1:04d}.png"))
+        frame.save(os.path.join(theme_dir, f"throbber-{i + 1:04d}.png"))
 
     # password entry box, bullet, lock icon
     ew, eh = 300, 50
@@ -85,26 +96,31 @@ def regenerate_images(palette):
     ed.rounded_rectangle(
         [0, 0, ew - 1, eh - 1], radius=10, fill=palette["bg_alt"] + (235,), outline=dim, width=2
     )
-    entry.save(os.path.join(THEME_DIR, "entry.png"))
+    entry.save(os.path.join(theme_dir, "entry.png"))
 
     bullet = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     bd = ImageDraw.Draw(bullet)
     bd.ellipse([2, 2, 14, 14], fill=accent_light)
-    bullet.save(os.path.join(THEME_DIR, "bullet.png"))
+    bullet.save(os.path.join(theme_dir, "bullet.png"))
 
     lock = Image.new("RGBA", (48, 48), (0, 0, 0, 0))
     ld = ImageDraw.Draw(lock)
     ld.rounded_rectangle([12, 20, 36, 44], radius=4, fill=accent)
     ld.arc([16, 4, 32, 28], 180, 360, fill=accent, width=5)
-    lock.save(os.path.join(THEME_DIR, "lock.png"))
+    lock.save(os.path.join(theme_dir, "lock.png"))
 
-    print(f"wrote images to {THEME_DIR}")
+    print(f"wrote images to {theme_dir}")
 
 
-def generate(palette):
-    update_plymouth_file(palette)
-    regenerate_images(palette)
+def generate(palette, spec):
+    theme_dir = os.path.join(spec.dir, "plymouth", spec.id_lower)
+    os.makedirs(theme_dir, exist_ok=True)
+    plymouth_file = os.path.join(theme_dir, f"{spec.id_lower}.plymouth")
+    update_plymouth_file(palette, spec, plymouth_file)
+    regenerate_images(palette, theme_dir)
 
 
 if __name__ == "__main__":
-    generate(load_palette(sys.argv[1]))
+    from theme_spec import get
+
+    generate(load_palette(sys.argv[1]), get(sys.argv[2]))

@@ -1,6 +1,6 @@
 """
 Regenerates the Plasma (ksplash) splash screen images and inline QML colors
-under look-and-feel/org.kde.beardeddiamond.desktop/contents/splash/.
+under <theme>/look-and-feel/<kde_lookandfeel_id>/contents/splash/.
 """
 
 import os
@@ -10,18 +10,8 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import hex_str, load_palette  # noqa: E402
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SPLASH_DIR = os.path.join(
-    REPO_ROOT, "look-and-feel", "org.kde.beardeddiamond.desktop", "contents", "splash"
-)
-IMAGES_DIR = os.path.join(SPLASH_DIR, "images")
-QML_FILE = os.path.join(SPLASH_DIR, "Splash.qml")
-PREVIEW_FILE = os.path.join(
-    REPO_ROOT, "look-and-feel", "org.kde.beardeddiamond.desktop", "contents", "previews", "splash.png"
-)
 
-
-def regenerate_images(palette):
+def regenerate_images(palette, images_dir, preview_file):
     from PIL import Image, ImageDraw
 
     accent = palette["accent"]
@@ -46,7 +36,7 @@ def regenerate_images(palette):
     outline = palette["bg_titlebar"]
     for a, b in [(left, right), (left, top), (right, top), (left, bottom), (right, bottom)]:
         d.line([a, b], fill=outline, width=4)
-    img.save(os.path.join(IMAGES_DIR, "logo.png"))
+    img.save(os.path.join(images_dir, "logo.png"))
 
     size = 256
     spinner = Image.new("RGBA", (size, size), (0, 0, 0, 0))
@@ -55,35 +45,44 @@ def regenerate_images(palette):
     sd.arc(bbox, 0, 360, fill=dim + (180,), width=14)
     sd.arc(bbox, 0, 90, fill=accent, width=14)
     sd.arc(bbox, 0, 20, fill=accent_light, width=14)
-    spinner.save(os.path.join(IMAGES_DIR, "spinner.png"))
+    spinner.save(os.path.join(images_dir, "spinner.png"))
 
     bg = Image.new("RGB", (800, 600), palette["bg_main"])
     lw, lh = 220, 220
     logo_resized = img.resize((lw, lh), Image.LANCZOS)
     bg.paste(logo_resized, ((800 - lw) // 2, (600 - lh) // 2 - 20), logo_resized)
-    bg.save(PREVIEW_FILE)
+    bg.save(preview_file)
 
-    print(f"wrote images to {IMAGES_DIR} and {PREVIEW_FILE}")
+    print(f"wrote images to {images_dir} and {preview_file}")
 
 
-def update_qml_colors(palette):
-    with open(QML_FILE) as f:
+def update_qml_colors(palette, spec, qml_file):
+    with open(qml_file) as f:
         text = f.read()
     text = re.sub(r'color: "#[0-9a-fA-F]{6}"', f'color: "{hex_str(palette, "bg_main")}"', text, count=1)
     text = re.sub(
-        r'color: "#[0-9a-fA-F]{6}"\n\s*text: "Bearded Diamond"',
-        f'color: "{hex_str(palette, "fg_normal")}"\n            text: "Bearded Diamond"',
+        r'color: "#[0-9a-fA-F]{6}"\n\s*text: "[^"]*"',
+        f'color: "{hex_str(palette, "fg_normal")}"\n            text: "{spec.display_name}"',
         text,
     )
-    with open(QML_FILE, "w") as f:
+    with open(qml_file, "w") as f:
         f.write(text)
-    print(f"wrote {QML_FILE}")
+    print(f"wrote {qml_file}")
 
 
-def generate(palette):
-    regenerate_images(palette)
-    update_qml_colors(palette)
+def generate(palette, spec):
+    lookandfeel_dir = os.path.join(spec.dir, "look-and-feel", spec.kde_lookandfeel_id)
+    splash_dir = os.path.join(lookandfeel_dir, "contents", "splash")
+    images_dir = os.path.join(splash_dir, "images")
+    qml_file = os.path.join(splash_dir, "Splash.qml")
+    preview_file = os.path.join(lookandfeel_dir, "contents", "previews", "splash.png")
+
+    os.makedirs(images_dir, exist_ok=True)
+    regenerate_images(palette, images_dir, preview_file)
+    update_qml_colors(palette, spec, qml_file)
 
 
 if __name__ == "__main__":
-    generate(load_palette(sys.argv[1]))
+    from theme_spec import get
+
+    generate(load_palette(sys.argv[1]), get(sys.argv[2]))

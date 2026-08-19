@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Bearded Diamond",
     "version": "1.0",
-    "description": "A Firefox theme generated to match the 'Bearded Theme Black & Diamond' VS Code theme: near-black chrome with a cyan accent and gold highlight tones.",
+    "description": "A Firefox theme generated to match the 'Bearded Theme Black & Diamond' VS Code theme.",
     "icons": {
         "48": "icons/icon48.png",
         "96": "icons/icon96.png"

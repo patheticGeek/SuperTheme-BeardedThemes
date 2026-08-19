@@ -1,6 +1,6 @@
 [Plymouth Theme]
 Name=Bearded Diamond
-Description=Boot splash generated to match the 'Bearded Theme Black & Diamond' VS Code theme: near-black background with a cyan diamond mark and spinner.
+Description=Boot splash generated to match the 'Bearded Theme Black & Diamond' VS Code theme.
 ModuleName=two-step
 
 [two-step]

@@ -1,4 +1,4 @@
-"""Regenerates color-schemes/BeardedDiamond.colors from the palette."""
+"""Regenerates <theme>/color-schemes/<Ident>.colors from the palette."""
 
 import os
 import sys
@@ -6,11 +6,8 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import rgb_csv  # noqa: E402
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT_PATH = os.path.join(REPO_ROOT, "color-schemes", "BeardedDiamond.colors")
 
-
-def generate(palette):
+def generate(palette, spec):
     p = lambda name: rgb_csv(palette, name)  # noqa: E731
 
     content = f"""[ColorEffects:Disabled]
@@ -125,8 +122,8 @@ ForegroundInactive={p('fg_inactive')}
 ForegroundNormal={p('fg_normal')}
 
 [General]
-ColorScheme=BeardedDiamond
-Name=Bearded Diamond
+ColorScheme={spec.ident}
+Name={spec.display_name}
 shadeSortColumn=true
 
 [KDE]
@@ -140,12 +137,15 @@ inactiveBackground={p('bg_button')}
 inactiveBlend={p('fg_inactive')}
 inactiveForeground={p('fg_inactive')}
 """
-    with open(OUT_PATH, "w") as f:
+    out_path = os.path.join(spec.dir, "color-schemes", f"{spec.ident}.colors")
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w") as f:
         f.write(content)
-    print(f"wrote {OUT_PATH}")
+    print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":
     from palette import load_palette
+    from theme_spec import get
 
-    generate(load_palette(sys.argv[1]))
+    generate(load_palette(sys.argv[1]), get(sys.argv[2]))

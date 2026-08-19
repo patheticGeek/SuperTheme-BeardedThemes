@@ -3,7 +3,7 @@
     "name": "Bearded Diamond",
     "short_name": "Bearded Diamond",
     "version": "1.0",
-    "description": "A Chrome theme generated to match the 'Bearded Theme Black & Diamond' VS Code theme: near-black chrome with a cyan accent and gold highlight tones.",
+    "description": "A Chrome theme generated to match the 'Bearded Theme Black & Diamond' VS Code theme.",
     "icons": {
         "16": "icons/icon16.png",
         "48": "icons/icon48.png",

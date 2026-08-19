@@ -1,13 +1,10 @@
-"""Regenerates ghostty-theme/BeardedDiamond from the palette."""
+"""Regenerates <theme>/ghostty-theme/<Ident> from the palette."""
 
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import hex_str, load_palette  # noqa: E402
-
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT_PATH = os.path.join(REPO_ROOT, "ghostty-theme", "BeardedDiamond")
 
 ANSI_ORDER = [
     "ansi_black",
@@ -29,7 +26,7 @@ ANSI_ORDER = [
 ]
 
 
-def generate(palette):
+def generate(palette, spec):
     h = lambda name: hex_str(palette, name)  # noqa: E731
 
     lines = [f"palette = {i}={h(name)}" for i, name in enumerate(ANSI_ORDER)]
@@ -42,11 +39,14 @@ def generate(palette):
         f"selection-foreground = {h('bg_titlebar')}",
     ]
 
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w") as f:
+    out_path = os.path.join(spec.dir, "ghostty-theme", spec.ident)
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w") as f:
         f.write("\n".join(lines) + "\n")
-    print(f"wrote {OUT_PATH}")
+    print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":
-    generate(load_palette(sys.argv[1]))
+    from theme_spec import get
+
+    generate(load_palette(sys.argv[1]), get(sys.argv[2]))

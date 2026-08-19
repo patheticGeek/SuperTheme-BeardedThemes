@@ -1,4 +1,4 @@
-"""Regenerates the colors block in chrome-theme/manifest.json from the palette."""
+"""Regenerates the colors block in <theme>/chrome-theme/manifest.json."""
 
 import json
 import os
@@ -8,12 +8,10 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import load_palette  # noqa: E402
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT_PATH = os.path.join(REPO_ROOT, "chrome-theme", "manifest.json")
 
-
-def generate(palette):
-    with open(OUT_PATH) as f:
+def generate(palette, spec):
+    out_path = os.path.join(spec.dir, "chrome-theme", "manifest.json")
+    with open(out_path) as f:
         manifest = json.load(f)
 
     p = lambda name: list(palette[name])  # noqa: E731
@@ -39,6 +37,11 @@ def generate(palette):
         "toolbar_bottom_separator": p("bg_titlebar"),
         "toolbar_vertical_separator": p("border"),
     }
+    manifest["name"] = spec.display_name
+    manifest["short_name"] = spec.display_name
+    manifest["description"] = (
+        f"A Chrome theme generated to match the 'Bearded Theme {spec.upstream_name}' VS Code theme."
+    )
 
     text = json.dumps(manifest, indent=4)
     # collapse [n,\n n,\n n\n] RGB triples back onto one line for readable diffs
@@ -47,10 +50,12 @@ def generate(palette):
         lambda m: f"[{m.group(1)}, {m.group(2)}, {m.group(3)}]",
         text,
     )
-    with open(OUT_PATH, "w") as f:
+    with open(out_path, "w") as f:
         f.write(text + "\n")
-    print(f"wrote {OUT_PATH}")
+    print(f"wrote {out_path}")
 
 
 if __name__ == "__main__":
-    generate(load_palette(sys.argv[1]))
+    from theme_spec import get
+
+    generate(load_palette(sys.argv[1]), get(sys.argv[2]))

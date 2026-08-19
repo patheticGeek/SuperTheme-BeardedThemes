@@ -6,7 +6,7 @@
 #   oh-my-zsh:    cp into ~/.oh-my-zsh/custom/themes/, then
 #                 ZSH_THEME="beardeddiamond" in ~/.zshrc
 #
-# Regenerate this file with: python3 scripts/gen_zsh_theme.py <theme.json>
+# Regenerate this file with: python3 scripts/regenerate.py <theme.json> black-and-diamond
 # Do not hand-edit the colors -- see AGENTS.md.
 
 autoload -Uz vcs_info

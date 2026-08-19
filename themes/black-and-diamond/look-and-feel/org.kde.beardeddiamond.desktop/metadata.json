@@ -7,7 +7,7 @@
             }
         ],
         "Category": "",
-        "Description": "A KDE Plasma 6 global theme generated to match the 'Bearded Theme Black & Diamond' VS Code color theme: near-black backgrounds with a cyan accent and gold cursor/highlight tones. Uses the 'Bearded Icons' icon theme ported from the matching VS Code icon pack.",
+        "Description": "A KDE Plasma 6 global theme generated to match the 'Bearded Theme Black & Diamond' VS Code color theme. Uses the 'Bearded Icons' icon theme ported from the matching VS Code icon pack.",
         "Id": "org.kde.beardeddiamond.desktop",
         "License": "GPL-2.0-or-later",
         "Name": "Bearded Diamond",

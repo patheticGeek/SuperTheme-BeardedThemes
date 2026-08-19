@@ -1,7 +1,9 @@
 """
-Derives the Bearded Diamond palette from a built 'Black & Diamond' VS Code
+Derives a Bearded Diamond palette from any built Bearded Theme VS Code
 theme JSON (as produced by vendor/bearded-theme's `npm run build:vscode`,
-at dist/vscode/themes/bearded-theme-black-&-diamond.json).
+at dist/vscode/themes/bearded-theme-<upstream-slug>.json for each entry in
+vendor/bearded-theme/src/shared/theme-registry.ts -- see scripts/theme_spec.py
+for how a variant's slug maps to that filename).
 
 This is the single source of truth other generator scripts read from, so
 that regenerating the theme after an upstream update only requires editing
@@ -17,7 +19,16 @@ def _hex_to_rgb(h):
     return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
 
 
-def load_palette(theme_json_path):
+def load_palette(theme_json_path, options=None):
+    """
+    options is the upstream theme-registry entry's `options` dict (light,
+    hc, desaturateInputs, ...) -- stashed on the palette as `_options` so
+    generators that need to branch on it (e.g. KDE widget style for light
+    variants) can, without every gen_*.py needing its own parameter for it.
+    The color keys themselves need no per-variant branching: the built
+    theme JSON already contains variant-correct values for editor.background
+    etc, light or dark.
+    """
     with open(theme_json_path) as f:
         theme = json.load(f)
     c = theme["colors"]
@@ -62,6 +73,7 @@ def load_palette(theme_json_path):
 
     palette = {name: _hex_to_rgb(h) for name, h in hexes.items()}
     palette["_hex"] = hexes
+    palette["_options"] = options or {}
     return palette
 
 
@@ -88,6 +100,6 @@ if __name__ == "__main__":
 
     p = load_palette(sys.argv[1])
     for name, rgb in p.items():
-        if name == "_hex":
+        if name in ("_hex", "_options"):
             continue
         print(f"{name:16s} {rgb}")

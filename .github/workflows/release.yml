@@ -1,8 +1,8 @@
 name: Release
 
-# Pushes to main publish a real GitHub Release (tag + the SuperTheme zip
-# and one zip per individual program theme, built by package.sh).
-# Pull requests only build and validate, uploading the same zips as a
+# Pushes to main publish a real GitHub Release (tag + the single SuperTheme
+# zip built by package.sh, containing every theme variant under themes/).
+# Pull requests only build and validate, uploading the same zip as a
 # workflow artifact -- not a public Release. See the note at the bottom of
 # this file for why.
 
@@ -32,13 +32,17 @@ jobs:
           bash -n install.sh
           bash -n package.sh
           bash -n scripts/update-from-upstream.sh
-          zsh -n zsh-theme/beardeddiamond.zsh-theme
+          for f in themes/*/zsh-theme/*.zsh-theme; do
+            zsh -n "$f"
+          done
 
       - name: Validate JSON manifests
         run: |
-          python3 -m json.tool chrome-theme/manifest.json > /dev/null
-          python3 -m json.tool firefox-theme/manifest.json > /dev/null
-          python3 -m json.tool look-and-feel/org.kde.beardeddiamond.desktop/metadata.json > /dev/null
+          for f in themes/*/chrome-theme/manifest.json \
+                   themes/*/firefox-theme/manifest.json \
+                   themes/*/look-and-feel/*/metadata.json; do
+            python3 -m json.tool "$f" > /dev/null
+          done
 
       - name: Determine version
         id: version
