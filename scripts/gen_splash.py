@@ -4,11 +4,93 @@ under <theme>/look-and-feel/<kde_lookandfeel_id>/contents/splash/.
 """
 
 import os
-import re
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import hex_str, load_palette  # noqa: E402
+
+QML_TEMPLATE = """\
+import QtQuick
+import org.kde.kirigami as Kirigami
+
+Rectangle {{
+    id: root
+    color: "{bg_main}"
+
+    property int stage
+
+    onStageChanged: {{
+        if (stage == 2) {{
+            introAnimation.running = true;
+        }} else if (stage == 5) {{
+            introAnimation.target = busyIndicator;
+            introAnimation.from = 1;
+            introAnimation.to = 0;
+            introAnimation.running = true;
+        }}
+    }}
+
+    Item {{
+        id: content
+        anchors.fill: parent
+        opacity: 0
+
+        Image {{
+            id: logo
+            readonly property real size: Kirigami.Units.gridUnit * 8
+
+            anchors.centerIn: parent
+
+            asynchronous: true
+            source: "images/logo.png"
+
+            sourceSize.width: size
+            sourceSize.height: size
+        }}
+
+        Image {{
+            id: busyIndicator
+            y: parent.height - (parent.height - logo.y) / 2 - height / 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            asynchronous: true
+            source: "images/spinner.png"
+            sourceSize.height: Kirigami.Units.gridUnit * 2
+            sourceSize.width: Kirigami.Units.gridUnit * 2
+            RotationAnimator on rotation {{
+                id: rotationAnimator
+                from: 0
+                to: 360
+                duration: 1400
+                loops: Animation.Infinite
+                running: Kirigami.Units.longDuration > 1
+            }}
+        }}
+
+        Text {{
+            anchors {{
+                bottom: parent.bottom
+                right: parent.right
+                margins: Kirigami.Units.gridUnit
+            }}
+            color: "{fg_normal}"
+            text: "{display_name}"
+            Accessible.name: text
+            Accessible.role: Accessible.StaticText
+            textFormat: Text.PlainText
+        }}
+    }}
+
+    OpacityAnimator {{
+        id: introAnimation
+        running: false
+        target: content
+        from: 0
+        to: 1
+        duration: Kirigami.Units.veryLongDuration * 2
+        easing.type: Easing.InOutQuad
+    }}
+}}
+"""
 
 
 def regenerate_images(palette, images_dir, preview_file):
@@ -57,14 +139,12 @@ def regenerate_images(palette, images_dir, preview_file):
 
 
 def update_qml_colors(palette, spec, qml_file):
-    with open(qml_file) as f:
-        text = f.read()
-    text = re.sub(r'color: "#[0-9a-fA-F]{6}"', f'color: "{hex_str(palette, "bg_main")}"', text, count=1)
-    text = re.sub(
-        r'color: "#[0-9a-fA-F]{6}"\n\s*text: "[^"]*"',
-        f'color: "{hex_str(palette, "fg_normal")}"\n            text: "{spec.display_name}"',
-        text,
+    text = QML_TEMPLATE.format(
+        bg_main=hex_str(palette, "bg_main"),
+        fg_normal=hex_str(palette, "fg_normal"),
+        display_name=spec.display_name,
     )
+    os.makedirs(os.path.dirname(qml_file), exist_ok=True)
     with open(qml_file, "w") as f:
         f.write(text)
     print(f"wrote {qml_file}")
@@ -78,6 +158,7 @@ def generate(palette, spec):
     preview_file = os.path.join(lookandfeel_dir, "contents", "previews", "splash.png")
 
     os.makedirs(images_dir, exist_ok=True)
+    os.makedirs(os.path.dirname(preview_file), exist_ok=True)
     regenerate_images(palette, images_dir, preview_file)
     update_qml_colors(palette, spec, qml_file)
 

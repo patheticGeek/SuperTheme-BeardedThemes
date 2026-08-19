@@ -1,4 +1,4 @@
-"""Regenerates the colors block in <theme>/firefox-theme/manifest.json."""
+"""Regenerates <theme>/firefox-theme/manifest.json from scratch."""
 
 import json
 import os
@@ -47,17 +47,21 @@ COLOR_MAP = {
 
 def generate(palette, spec):
     out_path = os.path.join(spec.dir, "firefox-theme", "manifest.json")
-    with open(out_path) as f:
-        manifest = json.load(f)
 
-    manifest["theme"]["colors"] = {
-        key: hex_str(palette, name) for key, name in COLOR_MAP.items()
+    manifest = {
+        "manifest_version": 2,
+        "name": spec.display_name,
+        "version": "1.0",
+        "description": (
+            f"A Firefox theme generated to match the 'Bearded Theme {spec.upstream_name}' VS Code theme."
+        ),
+        "icons": {"48": "icons/icon48.png", "96": "icons/icon96.png"},
+        "theme": {
+            "colors": {key: hex_str(palette, name) for key, name in COLOR_MAP.items()},
+        },
     }
-    manifest["name"] = spec.display_name
-    manifest["description"] = (
-        f"A Firefox theme generated to match the 'Bearded Theme {spec.upstream_name}' VS Code theme."
-    )
 
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w") as f:
         json.dump(manifest, f, indent=4)
         f.write("\n")

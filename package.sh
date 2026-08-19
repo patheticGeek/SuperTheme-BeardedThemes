@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Builds a single redistributable "SuperTheme" zip with everything:
-# install.sh, README, LICENSE, the shared icon theme, and every theme
-# variant under themes/.
+# Builds redistributable zips:
+#   - one "SuperTheme" zip with everything (install.sh, README, LICENSE,
+#     the shared icon theme, and every variant under themes/)
+#   - one zip per registered theme variant (install.sh, README, LICENSE,
+#     the shared icon theme, and just that variant under themes/), for
+#     anyone who only wants a single theme
 #
 # Usage: ./package.sh [version]
 #   version defaults to the short git commit hash, or "dev" outside a repo.
@@ -53,6 +56,8 @@ with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
 PY
 }
 
+### 1. SuperTheme -- everything bundled together ###############################
+
 SUPER_NAME="SuperTheme-${NAME}-${VERSION}"
 SUPER_DIR="$STAGE_DIR/$SUPER_NAME"
 mkdir -p "$SUPER_DIR"
@@ -63,8 +68,31 @@ chmod +x "$SUPER_DIR/install.sh"
 zip_dir "$SUPER_DIR" "$OUT_DIR/${SUPER_NAME}.zip"
 echo "Built $OUT_DIR/${SUPER_NAME}.zip"
 
+### 2. One zip per registered theme variant #####################################
+
+SLUGS=$(python3 -c "
+import sys
+sys.path.insert(0, '$SCRIPT_DIR/scripts')
+from theme_spec import REGISTRY
+for spec in REGISTRY:
+    print(f'{spec.slug} {spec.ident}')
+")
+
+while IFS=' ' read -r SLUG IDENT; do
+    [ -z "$SLUG" ] && continue
+    PKG_NAME="${IDENT}-${VERSION}"
+    PKG_DIR="$STAGE_DIR/$PKG_NAME"
+    mkdir -p "$PKG_DIR/themes"
+    cp -r "$SCRIPT_DIR/icons" "$PKG_DIR/"
+    cp -r "$SCRIPT_DIR/themes/$SLUG" "$PKG_DIR/themes/"
+    cp "$SCRIPT_DIR/install.sh" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/LICENSE" "$PKG_DIR/"
+    chmod +x "$PKG_DIR/install.sh"
+    zip_dir "$PKG_DIR" "$OUT_DIR/${PKG_NAME}.zip"
+    echo "Built $OUT_DIR/${PKG_NAME}.zip"
+done <<< "$SLUGS"
+
 rm -rf "$STAGE_DIR"
 
 echo
-echo "Package built in $OUT_DIR:"
+echo "All packages built in $OUT_DIR:"
 ls -1 "$OUT_DIR"

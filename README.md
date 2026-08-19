@@ -2,10 +2,11 @@
 
 Cross-application themes generated from the [Bearded Theme](https://github.com/BeardedBear/bearded-theme)
 VS Code color theme family and its companion "Bearded Icons" icon pack.
-Each variant lives under `themes/<slug>/`; currently the only one built out
-is `black-and-diamond` ("Black & Diamond": near-black backgrounds, a cyan
-accent, and gold highlight/cursor tones), but the pipeline supports adding
-any of the ~66 upstream variants — see [AGENTS.md](AGENTS.md).
+Each variant lives under `themes/<slug>/`; currently registered:
+`black-and-diamond` ("Black & Diamond": cyan accent, gold highlight/cursor
+tones) and `black-and-gold` ("Black & Gold": gold accent throughout). Both
+share the same near-black UI otherwise. The pipeline supports adding any of
+the ~66 upstream variants — see [AGENTS.md](AGENTS.md).
 
 `vendor/bearded-theme` and `vendor/bearded-icons` are git submodules of the
 upstream sources. The color pipeline regenerates a variant's colors from
@@ -142,13 +143,20 @@ source ~/.config/zsh/themes/beardeddiamond.zsh-theme
 ./package.sh [version]
 ```
 
-Produces a single `dist/SuperTheme-BeardedDiamond-<version>.zip` with
-everything bundled together (`install.sh`, `README.md`, `LICENSE`, the
-shared icon theme, and every variant under `themes/`), so others can
-download, extract, and run `./install.sh` without cloning the repo.
+Produces:
 
-Every push to `main` runs this automatically and publishes the resulting
-zip as a GitHub Release (see `.github/workflows/release.yml`).
+- `dist/SuperTheme-BeardedDiamond-<version>.zip` — everything bundled
+  together (`install.sh`, `README.md`, `LICENSE`, the shared icon theme,
+  and every variant under `themes/`), so others can download, extract, and
+  run `./install.sh` without cloning the repo.
+- `dist/<Ident>-<version>.zip` — one per registered variant (e.g.
+  `BeardedGold-<version>.zip`), containing just that variant plus the
+  shared icon theme, `install.sh`, `README.md`, and `LICENSE`, for anyone
+  who only wants a single theme.
+
+Every push to `main` runs this automatically and publishes all of the
+resulting zips in the same GitHub Release, titled with the short commit id
+(see `.github/workflows/release.yml`).
 
 ## Uninstall
 

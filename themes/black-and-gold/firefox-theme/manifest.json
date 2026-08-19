@@ -1,0 +1,48 @@
+{
+    "manifest_version": 2,
+    "name": "Bearded Gold",
+    "version": "1.0",
+    "description": "A Firefox theme generated to match the 'Bearded Theme Black & Gold' VS Code theme.",
+    "icons": {
+        "48": "icons/icon48.png",
+        "96": "icons/icon96.png"
+    },
+    "theme": {
+        "colors": {
+            "frame": "#060708",
+            "frame_inactive": "#0c0f11",
+            "tab_background_text": "#a0acbb",
+            "tab_selected": "#111418",
+            "tab_text": "#bec6d0",
+            "tab_line": "#c7910c",
+            "tab_loading": "#c7910c",
+            "toolbar": "#111418",
+            "toolbar_text": "#bec6d0",
+            "toolbar_field": "#161a1f",
+            "toolbar_field_text": "#bec6d0",
+            "toolbar_field_border": "#3b4654",
+            "toolbar_field_focus": "#161a1f",
+            "toolbar_field_text_focus": "#bec6d0",
+            "toolbar_field_highlight": "#c7910c",
+            "toolbar_field_highlight_text": "#060708",
+            "toolbar_top_separator": "#060708",
+            "toolbar_bottom_separator": "#060708",
+            "toolbar_vertical_separator": "#3b4654",
+            "icons": "#f4c54f",
+            "button_background_hover": "#161a1f",
+            "button_background_active": "#0c0f11",
+            "popup": "#161a1f",
+            "popup_text": "#bec6d0",
+            "popup_border": "#3b4654",
+            "popup_highlight": "#c7910c",
+            "popup_highlight_text": "#060708",
+            "sidebar": "#0c0f11",
+            "sidebar_text": "#bec6d0",
+            "sidebar_border": "#3b4654",
+            "sidebar_highlight": "#c7910c",
+            "sidebar_highlight_text": "#060708",
+            "ntp_background": "#111418",
+            "ntp_text": "#bec6d0"
+        }
+    }
+}

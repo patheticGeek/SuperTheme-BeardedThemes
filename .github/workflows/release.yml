@@ -1,10 +1,10 @@
 name: Release
 
-# Pushes to main publish a real GitHub Release (tag + the single SuperTheme
-# zip built by package.sh, containing every theme variant under themes/).
-# Pull requests only build and validate, uploading the same zip as a
-# workflow artifact -- not a public Release. See the note at the bottom of
-# this file for why.
+# Pushes to main publish a real GitHub Release (titled with just the short
+# commit id, tag + the SuperTheme zip plus one zip per registered theme
+# variant, all built by package.sh). Pull requests only build and validate,
+# uploading the same zips as a workflow artifact -- not a public Release.
+# See the note at the bottom of this file for why.
 
 on:
   push:
@@ -68,10 +68,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: >-
-            Bearded Diamond ${{ steps.version.outputs.version }}
-            (bearded-theme v${{ steps.upstream.outputs.theme_version }},
-            bearded-icons v${{ steps.upstream.outputs.icons_version }})
+          name: ${{ steps.version.outputs.version }}
           body: |
             Built from:
             - [bearded-theme](https://github.com/BeardedBear/bearded-theme) v${{ steps.upstream.outputs.theme_version }}

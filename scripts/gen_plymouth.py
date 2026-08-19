@@ -4,45 +4,78 @@ the watermark, throbber animation, and password-dialog images.
 """
 
 import os
-import re
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from palette import load_palette, plymouth_hex  # noqa: E402
 
-COLOR_KEYS = {
-    "BackgroundStartColor": "bg_main",
-    "BackgroundEndColor": "bg_button",
-    "ProgressBarBackgroundColor": "border",
-    "ProgressBarForegroundColor": "accent",
-}
+TEMPLATE = """\
+[Plymouth Theme]
+Name={display_name}
+Description=Boot splash generated to match the 'Bearded Theme {upstream_name}' VS Code theme.
+ModuleName=two-step
+
+[two-step]
+ImageDir=/usr/share/plymouth/themes/{id_lower}
+DialogHorizontalAlignment=.5
+DialogVerticalAlignment=.62
+TitleHorizontalAlignment=.5
+TitleVerticalAlignment=.62
+HorizontalAlignment=.5
+VerticalAlignment=.62
+WatermarkHorizontalAlignment=.5
+WatermarkVerticalAlignment=.5
+Transition=none
+TransitionDuration=0.0
+BackgroundStartColor={bg_main}
+BackgroundEndColor={bg_button}
+ProgressBarBackgroundColor={border}
+ProgressBarForegroundColor={accent}
+MessageBelowAnimation=true
+
+[boot-up]
+UseEndAnimation=false
+
+[shutdown]
+UseEndAnimation=false
+
+[reboot]
+UseEndAnimation=false
+
+[updates]
+SuppressMessages=true
+ProgressBarShowPercentComplete=true
+UseProgressBar=true
+Title=Installing Updates...
+SubTitle=Do not turn off your computer
+
+[system-upgrade]
+SuppressMessages=true
+ProgressBarShowPercentComplete=true
+UseProgressBar=true
+Title=Upgrading System...
+SubTitle=Do not turn off your computer
+
+[system-reset]
+SuppressMessages=true
+ProgressBarShowPercentComplete=true
+UseProgressBar=true
+Title=Resetting System...
+SubTitle=Do not turn off your computer
+"""
 
 
 def update_plymouth_file(palette, spec, plymouth_file):
-    with open(plymouth_file) as f:
-        text = f.read()
-    text = re.sub(r"^Name=.*$", f"Name={spec.display_name}", text, count=1, flags=re.MULTILINE)
-    text = re.sub(
-        r"^Description=.*$",
-        f"Description=Boot splash generated to match the 'Bearded Theme {spec.upstream_name}' VS Code theme.",
-        text,
-        count=1,
-        flags=re.MULTILINE,
+    text = TEMPLATE.format(
+        display_name=spec.display_name,
+        upstream_name=spec.upstream_name,
+        id_lower=spec.id_lower,
+        bg_main=plymouth_hex(palette, "bg_main"),
+        bg_button=plymouth_hex(palette, "bg_button"),
+        border=plymouth_hex(palette, "border"),
+        accent=plymouth_hex(palette, "accent"),
     )
-    text = re.sub(
-        r"^ImageDir=.*$",
-        f"ImageDir=/usr/share/plymouth/themes/{spec.id_lower}",
-        text,
-        count=1,
-        flags=re.MULTILINE,
-    )
-    for key, palette_name in COLOR_KEYS.items():
-        text = re.sub(
-            rf"^{key}=.*$",
-            f"{key}={plymouth_hex(palette, palette_name)}",
-            text,
-            flags=re.MULTILINE,
-        )
+    os.makedirs(os.path.dirname(plymouth_file), exist_ok=True)
     with open(plymouth_file, "w") as f:
         f.write(text)
     print(f"wrote {plymouth_file}")

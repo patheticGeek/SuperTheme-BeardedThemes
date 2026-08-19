@@ -7,9 +7,10 @@ Theme** VS Code theme family (vendored as a git submodule at
 <https://github.com/BeardedBear/bearded-theme>) and its companion
 **Bearded Icons** icon pack (vendored at `vendor/bearded-icons`, upstream:
 <https://github.com/BeardedBear/bearded-icons>, shared by every variant).
-Each variant lives under `themes/<slug>/`; currently only `black-and-diamond`
-(from upstream's "Black & Diamond") is registered -- see "Adding a new theme
-variant" below for wiring in more of the ~66 upstream variants.
+Each variant lives under `themes/<slug>/`; currently registered:
+`black-and-diamond` (from upstream's "Black & Diamond") and `black-and-gold`
+(from "Black & Gold") -- see "Adding a new theme variant" below for wiring
+in more of the ~66 upstream variants.
 
 If you are an AI coding agent asked to "update this theme", "sync with
 upstream", "refresh the colors", "add a new Bearded Theme variant", or
@@ -63,15 +64,18 @@ Run the one script that does everything:
 2. `npm install && npm run build:vscode` inside the submodule to produce
    fresh theme JSON for every upstream variant.
 3. Runs `scripts/regenerate.py <json> <slug>`, which regenerates every
-   color-derived artifact under `themes/<slug>/`:
+   artifact under `themes/<slug>/` from scratch (safe to run on a slug with
+   no existing directory -- everything is created, not patched):
    - `color-schemes/<Ident>.colors`
-   - `chrome-theme/manifest.json` (the `theme.colors` block only)
-   - `firefox-theme/manifest.json` (the `theme.colors` block only)
+   - `chrome-theme/manifest.json` and `chrome-theme/icons/icon{16,48,128}.png`
+   - `firefox-theme/manifest.json` and `firefox-theme/icons/icon{48,96}.png`
    - `plymouth/<id_lower>/<id_lower>.plymouth` + its images (watermark,
      throbber frames, entry/bullet/lock)
    - `look-and-feel/<kde_lookandfeel_id>/` (`metadata.json`, `contents/
-     defaults`, `contents/splash/Splash.qml` colors, `images/logo.png`,
-     `images/spinner.png`, `previews/splash.png`)
+     defaults`, `contents/splash/Splash.qml`, `images/logo.png`,
+     `images/spinner.png`, `previews/splash.png`,
+     `previews/{preview.png,fullscreenpreview.jpg}` -- the theme-picker
+     mockup)
    - `ghostty-theme/<Ident>` (16-color ANSI palette + UI colors)
    - `zsh-theme/<id_lower>.zsh-theme` (prompt colors)
 4. Prints a diff summary.

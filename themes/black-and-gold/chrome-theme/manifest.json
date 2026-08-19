@@ -1,0 +1,38 @@
+{
+    "manifest_version": 3,
+    "name": "Bearded Gold",
+    "short_name": "Bearded Gold",
+    "version": "1.0",
+    "description": "A Chrome theme generated to match the 'Bearded Theme Black & Gold' VS Code theme.",
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "theme": {
+        "colors": {
+            "frame": [6, 7, 8],
+            "frame_inactive": [12, 15, 17],
+            "toolbar": [17, 20, 24],
+            "toolbar_text": [190, 198, 208],
+            "tab_text": [190, 198, 208],
+            "tab_background_text": [160, 172, 187],
+            "tab_selected": [17, 20, 24],
+            "toolbar_button_icon": [199, 145, 12],
+            "button_background": [12, 15, 17],
+            "bookmark_text": [190, 198, 208],
+            "ntp_background": [17, 20, 24],
+            "ntp_text": [190, 198, 208],
+            "ntp_link": [199, 145, 12],
+            "ntp_header": [22, 26, 31],
+            "omnibox_background": [22, 26, 31],
+            "omnibox_text": [190, 198, 208],
+            "toolbar_top_separator": [6, 7, 8],
+            "toolbar_bottom_separator": [6, 7, 8],
+            "toolbar_vertical_separator": [59, 70, 84]
+        },
+        "properties": {
+            "ntp_background_alignment": "bottom"
+        }
+    }
+}

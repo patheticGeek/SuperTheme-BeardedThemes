@@ -27,6 +27,8 @@ import gen_firefox_theme  # noqa: E402
 import gen_plymouth  # noqa: E402
 import gen_splash  # noqa: E402
 import gen_lookandfeel_meta  # noqa: E402
+import gen_kde_preview  # noqa: E402
+import gen_browser_icons  # noqa: E402
 import gen_ghostty  # noqa: E402
 import gen_zsh_theme  # noqa: E402
 
@@ -35,11 +37,13 @@ def regenerate_one(theme_json_path, spec):
     palette = load_palette(theme_json_path, spec.options)
 
     gen_colorscheme.generate(palette, spec)
+    gen_browser_icons.generate(palette, spec)
     gen_chrome_theme.generate(palette, spec)
     gen_firefox_theme.generate(palette, spec)
     gen_plymouth.generate(palette, spec)
     gen_splash.generate(palette, spec)
     gen_lookandfeel_meta.generate(palette, spec)
+    gen_kde_preview.generate(palette, spec)
     gen_ghostty.generate(palette, spec)
     gen_zsh_theme.generate(palette, spec)
 

@@ -58,6 +58,15 @@ REGISTRY = [
         id_lower="beardeddiamond",
         options={},
     ),
+    ThemeSpec(
+        slug="black-and-gold",
+        upstream_slug="black-&-gold",
+        upstream_name="Black & Gold",
+        display_name="Bearded Gold",
+        ident="BeardedGold",
+        id_lower="beardedgold",
+        options={},
+    ),
 ]
 
 

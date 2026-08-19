@@ -43,7 +43,11 @@ def load_palette(theme_json_path, options=None):
         "fg_inactive": c["sideBar.foreground"][:7],
         "fg_button": c["button.foreground"],
         "fg_cursor_gold": c["editorCursor.foreground"],
-        "accent": c["terminal.ansiBlue"],
+        # NOT terminal.ansiBlue: that's the fixed ANSI blue slot and stays
+        # constant across every "Black & X" variant. The actual per-variant
+        # brand accent (cyan for Diamond, gold for Gold, etc) lives in the
+        # activity bar / badge colors instead.
+        "accent": c["activityBarBadge.background"],
         "positive": c["terminal.ansiGreen"],
         "negative": c["terminal.ansiRed"],
         "neutral": c["terminal.ansiYellow"],
