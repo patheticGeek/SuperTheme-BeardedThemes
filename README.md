@@ -29,18 +29,30 @@ Includes:
   toolbar, tabs, omnibox, and new-tab-page colors) for Chrome and
   Chromium-based browsers. Installed separately since it lives in the
   browser, not the desktop.
+- **Firefox theme** (`firefox-theme`) — the same palette mapped to Firefox's
+  theme color keys (frame, tabs, toolbar, address bar, popups, sidebar,
+  new-tab-page).
+- **Ghostty theme** (`ghostty-theme/BeardedDiamond`) — a terminal color
+  scheme (16-color ANSI palette, background/foreground, cursor, selection)
+  for the [Ghostty](https://ghostty.org) terminal emulator.
+- **zsh prompt theme** (`zsh-theme/beardeddiamond.zsh-theme`) — a
+  lightweight prompt (user@host, cwd, git branch, background-job and
+  exit-status indicators) using zsh's native truecolor escapes. Works
+  standalone or as an oh-my-zsh custom theme.
 
 ## Install
 
 ```sh
-git clone <this-repo> BardedDiamond
-cd BardedDiamond
+git clone --recurse-submodules <this-repo> BeardedDiamond
+cd BeardedDiamond
 ./install.sh --apply
 ```
 
-By default this installs into your user's XDG data directories
-(`~/.local/share/...`) — no root required — and applies the theme immediately
-with `--apply`.
+By default this installs the color scheme, icon theme, KDE global theme,
+Ghostty theme, and zsh theme into your user's config/XDG data directories
+(`~/.local/share/...`, `~/.config/...`) — no root required — and applies the
+KDE global theme immediately with `--apply`. The Chrome and Firefox themes
+are browser extensions and are always installed manually (see below).
 
 Options:
 
@@ -70,6 +82,43 @@ Chromium, Brave, Vivaldi, Edge, etc.). To install it:
 It applies immediately and can be removed like any other extension. There's
 nothing to publish to the Chrome Web Store here — it's meant for local use.
 
+## Firefox theme
+
+`firefox-theme/` is the same idea for Firefox. To install it:
+
+1. Go to `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on…** and select `firefox-theme/manifest.json`.
+
+Temporary add-ons are removed when Firefox restarts (Firefox only loads
+unsigned themes this way outside of Nightly/Developer Edition). For a
+permanent install, sign the theme via
+[addons.mozilla.org](https://addons.mozilla.org) or run Firefox Developer
+Edition/Nightly with `xpinstall.signatures.required` set to `false`.
+
+## Ghostty theme
+
+`install.sh` copies `ghostty-theme/BeardedDiamond` to
+`~/.config/ghostty/themes/BeardedDiamond`. Enable it by adding to your
+Ghostty config:
+
+```
+theme = BeardedDiamond
+```
+
+## zsh theme
+
+`install.sh` installs `zsh-theme/beardeddiamond.zsh-theme` to your
+oh-my-zsh custom themes directory (if oh-my-zsh is installed) or to
+`~/.config/zsh/themes/` otherwise. Enable it with either:
+
+```sh
+# oh-my-zsh: in ~/.zshrc
+ZSH_THEME="beardeddiamond"
+
+# plain zsh: in ~/.zshrc
+source ~/.config/zsh/themes/beardeddiamond.zsh-theme
+```
+
 ## Building a distributable package
 
 ```sh
@@ -89,6 +138,8 @@ Remove the installed directories:
 rm -f  ~/.local/share/color-schemes/BeardedDiamond.colors
 rm -rf ~/.local/share/icons/BeardedIcons
 rm -rf ~/.local/share/plasma/look-and-feel/org.kde.beardeddiamond.desktop
+rm -f  ~/.config/ghostty/themes/BeardedDiamond
+rm -f  ~/.oh-my-zsh/custom/themes/beardeddiamond.zsh-theme  # or ~/.config/zsh/themes/...
 # if installed with --with-plymouth:
 sudo rm -rf /usr/share/plymouth/themes/beardeddiamond
 sudo plymouth-set-default-theme -R <previous-theme>

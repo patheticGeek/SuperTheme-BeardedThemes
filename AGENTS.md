@@ -58,11 +58,14 @@ This:
    color-derived artifact in this repo:
    - `color-schemes/BeardedDiamond.colors`
    - `chrome-theme/manifest.json` (the `theme.colors` block only)
+   - `firefox-theme/manifest.json` (the `theme.colors` block only)
    - `plymouth/beardeddiamond/beardeddiamond.plymouth` + its images
      (watermark, throbber frames, entry/bullet/lock)
    - `look-and-feel/org.kde.beardeddiamond.desktop/contents/splash/`
      (`Splash.qml` colors, `images/logo.png`, `images/spinner.png`,
      `previews/splash.png`)
+   - `ghostty-theme/BeardedDiamond` (16-color ANSI palette + UI colors)
+   - `zsh-theme/beardeddiamond.zsh-theme` (prompt colors)
 4. Prints a diff summary.
 
 Nothing is committed automatically. After it runs:
