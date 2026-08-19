@@ -119,16 +119,25 @@ ZSH_THEME="beardeddiamond"
 source ~/.config/zsh/themes/beardeddiamond.zsh-theme
 ```
 
-## Building a distributable package
+## Building distributable packages
 
 ```sh
 ./package.sh [version]
 ```
 
-Produces `dist/BeardedDiamond-<version>.tar.gz` containing everything needed
-to install the theme (`install.sh`, `README.md`, `LICENSE`, and the theme
-files) so others can download, extract, and run `./install.sh` without
-cloning the repository.
+Produces zip files in `dist/`:
+
+- `SuperTheme-BeardedDiamond-<version>.zip` — everything bundled together
+  (`install.sh`, `README.md`, `LICENSE`, and all the theme files), so others
+  can download, extract, and run `./install.sh` without cloning the repo.
+- `BeardedDiamond-<program>-<version>.zip` — one per program (`kde`,
+  `chrome`, `firefox`, `ghostty`, `zsh`, `plymouth`) for anyone who only
+  wants a single theme. Each contains just that program's files, `LICENSE`,
+  and a short `INSTALL.txt` with manual install steps (no `install.sh`
+  inside these, since it operates on the full set of directories).
+
+Every push to `main` runs this automatically and publishes the resulting
+zips as a GitHub Release (see `.github/workflows/release.yml`).
 
 ## Uninstall
 

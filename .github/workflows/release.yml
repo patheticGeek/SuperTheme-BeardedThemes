@@ -1,7 +1,8 @@
 name: Release
 
-# Pushes to main publish a real GitHub Release (tag + packaged tarball).
-# Pull requests only build and validate, uploading the package as a
+# Pushes to main publish a real GitHub Release (tag + the SuperTheme zip
+# and one zip per individual program theme, built by package.sh).
+# Pull requests only build and validate, uploading the same zips as a
 # workflow artifact -- not a public Release. See the note at the bottom of
 # this file for why.
 
@@ -44,11 +45,11 @@ jobs:
       - name: Build package
         run: ./package.sh "${{ steps.version.outputs.version }}"
 
-      - name: Upload build artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: BeardedDiamond-${{ steps.version.outputs.version }}
-          path: dist/*.tar.gz
+          path: dist/*.zip
 
       - name: Create GitHub release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -57,7 +58,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: Bearded Diamond ${{ steps.version.outputs.version }}
           generate_release_notes: true
-          files: dist/*.tar.gz
+          files: dist/*.zip
 
 # Why PRs don't get a real Release:
 #
