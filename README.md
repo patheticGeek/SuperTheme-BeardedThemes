@@ -4,11 +4,14 @@ A KDE Plasma 6 global theme generated from the [Bearded Theme](https://github.co
 "Black & Diamond" VS Code color theme and its companion "Bearded Icons" icon
 pack: near-black backgrounds, a cyan accent, and gold highlight/cursor tones.
 
-`vendor/bearded-theme` is a git submodule of the upstream theme source, used
-to regenerate this repo's colors when upstream changes — see
-[AGENTS.md](AGENTS.md) for how (any AI coding agent can follow it directly).
-Clone with `git clone --recurse-submodules`, or run
-`git submodule update --init` after a plain clone.
+`vendor/bearded-theme` and `vendor/bearded-icons` are git submodules of the
+upstream sources. The color pipeline regenerates this repo's colors from
+`vendor/bearded-theme` automatically — see [AGENTS.md](AGENTS.md) for how
+(any AI coding agent can follow it directly). `vendor/bearded-icons` is
+vendored for reference and version tracking; porting icon changes from it
+is still a manual process (also documented in AGENTS.md). Clone with
+`git clone --recurse-submodules`, or run `git submodule update --init`
+after a plain clone.
 
 Includes:
 

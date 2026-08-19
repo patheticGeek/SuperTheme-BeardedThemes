@@ -48,7 +48,7 @@ jobs:
         id: upstream
         run: |
           echo "theme_version=$(python3 -c "import json; print(json.load(open('vendor/bearded-theme/package.json'))['version'])")" >> "$GITHUB_OUTPUT"
-          echo "icons_version=$(cat icons/BEARDED_ICONS_VERSION)" >> "$GITHUB_OUTPUT"
+          echo "icons_version=$(grep -m1 -oE '^## [0-9]+\.[0-9]+\.[0-9]+' vendor/bearded-icons/CHANGELOG.md | awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
       - name: Build package
         run: ./package.sh "${{ steps.version.outputs.version }}"

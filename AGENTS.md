@@ -3,7 +3,9 @@
 This repo is a KDE Plasma 6 global theme, Chrome theme, and boot splash
 derived from the **Bearded Theme "Black & Diamond"** VS Code theme
 (vendored as a git submodule at `vendor/bearded-theme`, upstream:
-<https://github.com/BeardedBear/bearded-theme>).
+<https://github.com/BeardedBear/bearded-theme>) and its companion
+**Bearded Icons** icon pack (vendored at `vendor/bearded-icons`, upstream:
+<https://github.com/BeardedBear/bearded-icons>).
 
 If you are an AI coding agent asked to "update this theme", "sync with
 upstream", "refresh the colors", or similar — this file is your task spec.
@@ -79,17 +81,23 @@ git commit -m "Sync colors with upstream bearded-theme <short-sha>"
 
 ## What this does NOT cover
 
-- **`icons/BeardedIcons`** — ported from the separate
-  [bearded-icons](https://github.com/BeardedBear/bearded-icons) VS Code
-  extension, which is not vendored here. If it needs updating, that's a
-  manual re-port: diff the extension's `icons.json` / `icons/*.svg` against
-  what's mapped in this repo (there's no script for this yet — the original
-  mapping table lives only in this project's history, not in `scripts/`).
-  After re-porting, bump `icons/BEARDED_ICONS_VERSION` (just the version
-  string, e.g. `1.23.0`) to match the extension version you ported from --
-  `release.yml` reads this file to put the icon pack version in each
-  release's title/body, same as it reads `vendor/bearded-theme/package.json`
-  for the theme version.
+- **`icons/BeardedIcons`** — ported from `vendor/bearded-icons` (the
+  submodule), but *not* automatically: there's no generator script for it
+  yet, only the manual mapping that was done once (VS Code icon-theme
+  `iconDefinitions`/`fileExtensions`/`languageIds` -> freedesktop mimetype
+  icon names -> `icons/BeardedIcons/{mimetypes,places}/scalable/*.svg`, see
+  git history for the exact mapping table). If `vendor/bearded-icons` has
+  upstream changes worth porting (new file-type icons, redrawn existing
+  ones), that's a manual diff-and-reapply of that mapping -- there's
+  nothing to run.
+- Icon pack version reporting *is* automatic: `release.yml` reads
+  `vendor/bearded-icons/CHANGELOG.md`'s top `## X.Y.Z` heading (that repo
+  has no `version` field in `package.json`) the same way it reads
+  `vendor/bearded-theme/package.json`'s `version` for the theme. This
+  reflects whatever commit the submodule is pinned to, not necessarily
+  what `icons/BeardedIcons` was actually last ported from -- keep the
+  submodule pinned to (or update it to) the commit you actually ported
+  from when you do a manual re-port.
 - Anything structural: if upstream renames/removes the VS Code color keys
   `scripts/palette.py` reads (e.g. `editor.background`,
   `terminal.ansiBlue`, `focusBorder` — see that file for the full list),
