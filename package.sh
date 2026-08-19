@@ -25,7 +25,7 @@ PKG_NAME="${NAME}-${VERSION}"
 PKG_DIR="$STAGE_DIR/$PKG_NAME"
 
 mkdir -p "$PKG_DIR"
-cp -r "$SCRIPT_DIR"/color-schemes "$SCRIPT_DIR"/icons "$SCRIPT_DIR"/look-and-feel "$SCRIPT_DIR"/plymouth \
+cp -r "$SCRIPT_DIR"/color-schemes "$SCRIPT_DIR"/icons "$SCRIPT_DIR"/look-and-feel "$SCRIPT_DIR"/plymouth "$SCRIPT_DIR"/chrome-theme \
       "$SCRIPT_DIR"/install.sh "$SCRIPT_DIR"/README.md "$SCRIPT_DIR"/LICENSE \
       "$PKG_DIR/"
 chmod +x "$PKG_DIR/install.sh"

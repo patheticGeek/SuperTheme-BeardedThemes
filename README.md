@@ -19,6 +19,10 @@ Includes:
 - **Plymouth boot theme** (`plymouth/beardeddiamond`) — the system boot
   splash shown before login, styled to match. Installed separately since it
   requires root and a system boot component.
+- **Chrome theme** (`chrome-theme`) — a matching browser theme (frame,
+  toolbar, tabs, omnibox, and new-tab-page colors) for Chrome and
+  Chromium-based browsers. Installed separately since it lives in the
+  browser, not the desktop.
 
 ## Install
 
@@ -47,6 +51,18 @@ The Plymouth boot theme is opt-in and separate from the rest because it's a
 system-level, root-owned change that affects every boot and requires
 rebuilding the initramfs — review `plymouth/beardeddiamond/beardeddiamond.plymouth`
 before installing it.
+
+## Chrome theme
+
+`chrome-theme/` is an unpacked browser extension that themes Chrome (and
+Chromium, Brave, Vivaldi, Edge, etc.). To install it:
+
+1. Go to `chrome://extensions`.
+2. Enable **Developer mode** (top right).
+3. Click **Load unpacked** and select the `chrome-theme` directory.
+
+It applies immediately and can be removed like any other extension. There's
+nothing to publish to the Chrome Web Store here — it's meant for local use.
 
 ## Building a distributable package
 
