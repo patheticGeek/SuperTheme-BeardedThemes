@@ -53,8 +53,8 @@ icons, actions, devices, etc.).
 ## Install
 
 ```sh
-git clone --recurse-submodules <this-repo> BeardedDiamond
-cd BeardedDiamond
+git clone --recurse-submodules https://github.com/patheticGeek/SuperTheme-BeardedThemes.git BeardedThemes
+cd BeardedThemes
 ./install.sh --apply
 ```
 
