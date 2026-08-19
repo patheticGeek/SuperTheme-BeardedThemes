@@ -145,7 +145,7 @@ source ~/.config/zsh/themes/beardeddiamond.zsh-theme
 
 Produces:
 
-- `dist/SuperTheme-BeardedDiamond-<version>.zip` — everything bundled
+- `dist/SuperTheme-<version>.zip` — everything bundled
   together (`install.sh`, `README.md`, `LICENSE`, the shared icon theme,
   and every variant under `themes/`), so others can download, extract, and
   run `./install.sh` without cloning the repo.

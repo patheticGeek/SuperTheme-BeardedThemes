@@ -58,7 +58,7 @@ PY
 
 ### 1. SuperTheme -- everything bundled together ###############################
 
-SUPER_NAME="SuperTheme-${NAME}-${VERSION}"
+SUPER_NAME="SuperTheme-${VERSION}"
 SUPER_DIR="$STAGE_DIR/$SUPER_NAME"
 mkdir -p "$SUPER_DIR"
 cp -r "$SCRIPT_DIR"/icons "$SCRIPT_DIR"/themes \
