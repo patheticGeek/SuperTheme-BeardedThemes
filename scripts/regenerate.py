@@ -10,9 +10,9 @@ slug defaults to the only entry currently in scripts/theme_spec.py's
 REGISTRY ("black-and-diamond"); pass it explicitly once more variants are
 registered there. This script only touches colors (color scheme, Chrome
 theme, Firefox theme, Plymouth boot theme, Plasma splash + look-and-feel
-metadata, Ghostty theme) -- it does NOT touch icons/BeardedIcons, which is
-ported from the separate 'bearded-icons' VS Code extension and updated
-manually (shared across all variants).
+metadata, Ghostty theme) -- it does NOT touch icons/BeardedIcons, which comes
+from the separate 'bearded-icons' submodule and is shared across all variants;
+run scripts/gen_icons.py for that (or scripts/build-all.sh for both).
 """
 
 import os

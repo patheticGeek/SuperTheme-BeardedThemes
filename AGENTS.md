@@ -7,9 +7,11 @@ Theme** VS Code theme family (vendored as a git submodule at
 <https://github.com/BeardedBear/bearded-theme>) and its companion
 **Bearded Icons** icon pack (vendored at `vendor/bearded-icons`, upstream:
 <https://github.com/BeardedBear/bearded-icons>, shared by every variant).
-Each variant lives under `themes/<slug>/` — generated output, gitignored
-(not committed; rebuild it with `./scripts/build-all.sh` after cloning, or
-per-variant with `./scripts/regenerate.py`/`update-from-upstream.sh` below).
+Both generated trees — `themes/<slug>/` per variant and the shared
+`icons/BeardedIcons` — are gitignored output, not committed; rebuild them with
+`./scripts/build-all.sh` after cloning, or individually with
+`./scripts/regenerate.py`/`update-from-upstream.sh` (colors) and
+`./scripts/gen_icons.py` (icons), below.
 Currently registered:
 `black-and-diamond` (from upstream's "Black & Diamond"), `black-and-gold`
 (from "Black & Gold"), and `black-and-emerald` (from "Black & Emerald") --
@@ -83,6 +85,15 @@ Run the one script that does everything:
    - `ghostty-theme/<Ident>` (16-color ANSI palette + UI colors)
 4. Prints a diff summary.
 
+It does not touch `icons/BeardedIcons` -- that tree comes from the *other*
+submodule. To refresh it after bumping `vendor/bearded-icons`:
+
+```sh
+python3 scripts/gen_icons.py
+```
+
+`./scripts/build-all.sh` does both.
+
 Nothing is committed automatically. `themes/` itself is gitignored, so
 there's nothing to commit there -- but `vendor/bearded-theme` was just
 fast-forwarded to a new upstream commit, which IS tracked (as a submodule
@@ -115,30 +126,35 @@ definitions themselves). To add one of them here:
 3. Run `./scripts/update-from-upstream.sh <your-new-slug>` -- this creates
    `themes/<your-new-slug>/` from scratch with every color-derived artifact
    (the generators create their output directories as needed).
-4. Icons are NOT per-variant -- `icons/BeardedIcons` is shared by every
-   theme in `themes/`, so there's nothing to do for icons.
+4. Icons are NOT per-variant -- `icons/BeardedIcons` carries no accent color
+   and is shared by every theme in `themes/`, so there's nothing to do for
+   icons.
 5. Review the diff, especially for light/hc variants (contrast, readability
    of the splash/Plymouth text) since those have had the least testing.
 
 ## What this does NOT cover
 
-- **`icons/BeardedIcons`** — ported from `vendor/bearded-icons` (the
-  submodule), but *not* automatically: there's no generator script for it
-  yet, only the manual mapping that was done once (VS Code icon-theme
-  `iconDefinitions`/`fileExtensions`/`languageIds` -> freedesktop mimetype
-  icon names -> `icons/BeardedIcons/{mimetypes,places}/scalable/*.svg`, see
-  git history for the exact mapping table). If `vendor/bearded-icons` has
-  upstream changes worth porting (new file-type icons, redrawn existing
-  ones), that's a manual diff-and-reapply of that mapping -- there's
-  nothing to run.
-- Icon pack version reporting *is* automatic: `release.yml` reads
+- **Which icons are mapped.** `scripts/gen_icons.py` rebuilds
+  `icons/BeardedIcons` from the submodule, but only for the ~91 rows in
+  `scripts/icon_map.py`. Upstream ships ~390 icons, so covering a new file
+  type is a deliberate act: add a `"<freedesktop-icon-name>":
+  "<upstream-basename>"` row and re-run the script. Nothing auto-discovers
+  new upstream icons, because there's no mechanical way to derive a
+  freedesktop mimetype name (`text-x-kotlin`) from a VS Code language id
+  (`kotlin`) -- that judgement is exactly what the table stores. To find
+  candidates, list `vendor/bearded-icons/src/shared/icons/` and cross-check
+  against `/usr/share/mime/` or the mimetype names Dolphin actually requests.
+- **Icon art itself.** The SVGs are copied byte-for-byte and never edited. If
+  upstream redraws one, a submodule bump plus `gen_icons.py` picks it up with
+  no action here. If upstream *renames or deletes* a file that `icon_map.py`
+  points at, `gen_icons.py` fails loudly listing the missing sources -- fix
+  the value in the table, not the generated tree.
+- Icon pack version reporting is automatic: `release.yml` reads
   `vendor/bearded-icons/CHANGELOG.md`'s top `## X.Y.Z` heading (that repo
   has no `version` field in `package.json`) the same way it reads
-  `vendor/bearded-theme/package.json`'s `version` for the theme. This
-  reflects whatever commit the submodule is pinned to, not necessarily
-  what `icons/BeardedIcons` was actually last ported from -- keep the
-  submodule pinned to (or update it to) the commit you actually ported
-  from when you do a manual re-port.
+  `vendor/bearded-theme/package.json`'s `version` for the theme. Since the
+  icon theme is now generated from whatever commit the submodule is pinned
+  to, that version always matches what actually shipped.
 - Anything structural: if upstream renames/removes the VS Code color keys
   `scripts/palette.py` reads (e.g. `editor.background`,
   `terminal.ansiBlue`, `focusBorder` — see that file for the full list),
@@ -163,7 +179,9 @@ Each generator can also be run individually — see `scripts/gen_*.py`.
 
 - Don't hand-edit the generated files listed above; edit the generator
   scripts or `vendor/bearded-theme` instead, then regenerate. Hand-edits
-  will just be overwritten on the next sync.
+  will just be overwritten on the next sync. Same for `icons/BeardedIcons`:
+  `gen_icons.py` deletes and rebuilds the whole tree, so changes belong in
+  `scripts/icon_map.py` or upstream.
 - Keep `scripts/palette.py`'s named colors (`bg_main`, `accent`, `border`,
   etc.) as the only place that maps upstream VS Code keys to this theme's
   semantic palette — every generator should read from that dict, never

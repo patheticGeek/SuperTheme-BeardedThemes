@@ -8,8 +8,9 @@
 #   REGISTRY for the full list of registered variants.
 #
 # This does NOT commit anything -- it leaves you with a working tree diff to
-# review. It also does not touch icons/BeardedIcons (ported from the
-# separate bearded-icons extension, updated manually, shared by all variants).
+# review. It also does not touch icons/BeardedIcons, which is generated from
+# the separate bearded-icons submodule and shared by all variants -- run
+# scripts/gen_icons.py for that, or scripts/build-all.sh for both.
 #
 # Requires: git, node+npm (to build the upstream theme), python3 with Pillow.
 

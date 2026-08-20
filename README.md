@@ -12,12 +12,12 @@ share the same near-black UI otherwise. The pipeline supports adding any of
 the ~66 upstream variants — see [AGENTS.md](AGENTS.md).
 
 `vendor/bearded-theme` and `vendor/bearded-icons` are git submodules of the
-upstream sources. The color pipeline regenerates a variant's colors from
-`vendor/bearded-theme` automatically — see [AGENTS.md](AGENTS.md) for how
-(any AI coding agent can follow it directly). `vendor/bearded-icons` is
-vendored for reference and version tracking; porting icon changes from it
-is still a manual process (also documented in AGENTS.md), and the resulting
-icon theme (`icons/BeardedIcons`) is shared across every variant rather than
+upstream sources, and both generated trees are rebuilt from them — a variant's
+colors under `themes/<slug>/` from `vendor/bearded-theme`, and the icon theme
+(`icons/BeardedIcons`) from `vendor/bearded-icons`. Neither is committed; run
+`./scripts/build-all.sh` to produce them. See [AGENTS.md](AGENTS.md) for how the
+pipeline works (any AI coding agent can follow it directly). The icon theme
+carries no accent color, so it's shared across every variant rather than
 generated per-theme. Clone with `git clone --recurse-submodules`, or run
 `git submodule update --init` after a plain clone.
 
@@ -47,7 +47,9 @@ The **icon theme** (`icons/BeardedIcons`, shared by all variants) has
 folder icons plus ~90 file-type (mimetype) icons ported from the Bearded
 Icons VS Code extension, covering the most common languages and file
 formats. Inherits Breeze Dark for everything not explicitly themed (app
-icons, actions, devices, etc.).
+icons, actions, devices, etc.). The SVGs are copied verbatim from
+`vendor/bearded-icons`; the port is purely a rename to freedesktop icon
+names, recorded in `scripts/icon_map.py`.
 
 ## Screenshots
 
@@ -84,14 +86,14 @@ chmod +x install.sh
 | `--system`         | Install system-wide instead of per-user (needs `sudo`, forwarded)                    |
 | `--with-plymouth`  | Also install the boot splash(es) (needs `sudo`, forwarded)                           |
 
-**From a local checkout** — for development. `themes/` is generated (not
-committed to the repo — see [AGENTS.md](AGENTS.md)), so build it once after
-cloning:
+**From a local checkout** — for development. `themes/` and `icons/` are both
+generated (not committed to the repo — see [AGENTS.md](AGENTS.md)), so build
+them once after cloning:
 
 ```sh
 git clone --recurse-submodules https://github.com/patheticGeek/SuperTheme-BeardedThemes.git BeardedThemes
 cd BeardedThemes
-./scripts/build-all.sh   # builds themes/ for every registered variant (needs node/npm, python3+Pillow)
+./scripts/build-all.sh   # builds icons/ + themes/ for every registered variant (needs node/npm, python3+Pillow)
 ./install-dev.sh --apply
 ```
 
