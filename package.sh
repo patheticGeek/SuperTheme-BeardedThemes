@@ -6,6 +6,11 @@
 #     the shared icon theme, and just that variant under themes/), for
 #     anyone who only wants a single theme
 #
+# Each zip's install.sh is this repo's install-dev.sh (the local-files
+# installer), copied in under the name "install.sh" since that's the
+# extracted deliverable's entry point -- it's what the root install.sh
+# (the release-fetching bootstrap script) downloads and hands off to.
+#
 # Usage: ./package.sh [version]
 #   version defaults to the short git commit hash, or "dev" outside a repo.
 #
@@ -61,9 +66,9 @@ PY
 SUPER_NAME="SuperTheme-${VERSION}"
 SUPER_DIR="$STAGE_DIR/$SUPER_NAME"
 mkdir -p "$SUPER_DIR"
-cp -r "$SCRIPT_DIR"/icons "$SCRIPT_DIR"/themes \
-      "$SCRIPT_DIR"/install.sh "$SCRIPT_DIR"/README.md "$SCRIPT_DIR"/LICENSE \
+cp -r "$SCRIPT_DIR"/icons "$SCRIPT_DIR"/themes "$SCRIPT_DIR"/README.md "$SCRIPT_DIR"/LICENSE \
       "$SUPER_DIR/"
+cp "$SCRIPT_DIR/install-dev.sh" "$SUPER_DIR/install.sh"
 chmod +x "$SUPER_DIR/install.sh"
 zip_dir "$SUPER_DIR" "$OUT_DIR/${SUPER_NAME}.zip"
 echo "Built $OUT_DIR/${SUPER_NAME}.zip"
@@ -85,7 +90,8 @@ while IFS=' ' read -r SLUG IDENT; do
     mkdir -p "$PKG_DIR/themes"
     cp -r "$SCRIPT_DIR/icons" "$PKG_DIR/"
     cp -r "$SCRIPT_DIR/themes/$SLUG" "$PKG_DIR/themes/"
-    cp "$SCRIPT_DIR/install.sh" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/LICENSE" "$PKG_DIR/"
+    cp "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/LICENSE" "$PKG_DIR/"
+    cp "$SCRIPT_DIR/install-dev.sh" "$PKG_DIR/install.sh"
     chmod +x "$PKG_DIR/install.sh"
     zip_dir "$PKG_DIR" "$OUT_DIR/${PKG_NAME}.zip"
     echo "Built $OUT_DIR/${PKG_NAME}.zip"

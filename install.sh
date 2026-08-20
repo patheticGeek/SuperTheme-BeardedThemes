@@ -1,159 +1,149 @@
 #!/usr/bin/env bash
-# Installs Bearded Diamond theme variant(s): KDE Plasma global theme,
-# Ghostty terminal theme, and zsh prompt theme.
+# Downloads the latest Bearded Themes GitHub release, lets you pick which
+# theme variant to install, and runs its installer. This is the entry point
+# for anyone who hasn't cloned the repo -- it needs only curl and unzip, no
+# git, no Node, no Python.
 #
-# By default installs every variant under themes/ into the current user's
-# XDG data dirs (no root needed) and covers everything except the Plymouth
-# boot splash, which lives outside the user session and requires root + an
-# initramfs rebuild to take effect. The Chrome and Firefox themes are
-# browser extensions, loaded manually -- see README.md.
+# If you have a local checkout with themes/ already built (e.g. you're
+# working on the pipeline itself), use ./install-dev.sh instead -- it
+# installs straight from local files without downloading anything.
 #
 # Usage:
-#   ./install.sh                 install color scheme, icons, global theme,
-#                                 Ghostty theme, zsh theme (user-level) for
-#                                 every variant under themes/
-#   ./install.sh --theme=<slug>  only install the named variant (see
-#                                 themes/ for available slugs)
-#   ./install.sh --apply         also apply the KDE global theme immediately
-#                                 (only valid with a single variant, explicit
-#                                 or the only one present)
-#   ./install.sh --system        install user-level components system-wide instead (needs sudo)
-#   ./install.sh --with-plymouth also install the Plymouth boot theme (needs sudo, rebuilds initramfs)
-#   ./install.sh --help          show this text
+#   ./install.sh                    list variants in the latest release, ask which to install
+#   ./install.sh --variant=<name>   install a specific variant non-interactively (see --list)
+#   ./install.sh --all              install the SuperTheme (every variant) non-interactively
+#   ./install.sh --list             print available variants from the latest release and exit
+#
+# Any other flag (--apply, --system, --with-plymouth, --theme=<slug>) is
+# forwarded as-is to the downloaded install-dev.sh -- see its --help for
+# what those do. --theme=<slug> only matters if you picked --all, to narrow
+# down to one variant inside the SuperTheme bundle.
+#
+# If the repo is private, set GITHUB_TOKEN (or GH_TOKEN) to a token with
+# read access -- GitHub's API returns a plain 404 for private repos to
+# unauthenticated requests, same as a repo that doesn't exist.
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APPLY=0
-SYSTEM=0
-WITH_PLYMOUTH=0
-ONLY_THEME=""
+REPO="patheticGeek/SuperTheme-BeardedThemes"
+API_URL="https://api.github.com/repos/$REPO/releases/latest"
+TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+
+if ! command -v curl >/dev/null 2>&1; then
+    echo "error: curl is required" >&2
+    exit 1
+fi
+if ! command -v unzip >/dev/null 2>&1; then
+    echo "error: unzip is required" >&2
+    exit 1
+fi
+
+VARIANT=""
+LIST_ONLY=0
+FORWARD_ARGS=()
 
 for arg in "$@"; do
     case "$arg" in
-        --apply) APPLY=1 ;;
-        --system) SYSTEM=1 ;;
-        --with-plymouth) WITH_PLYMOUTH=1 ;;
-        --theme=*) ONLY_THEME="${arg#--theme=}" ;;
+        --variant=*) VARIANT="${arg#--variant=}" ;;
+        --all) VARIANT="SuperTheme" ;;
+        --list) LIST_ONLY=1 ;;
         --help|-h)
-            sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
             exit 0
             ;;
-        *)
-            echo "Unknown option: $arg" >&2
-            exit 1
-            ;;
+        *) FORWARD_ARGS+=("$arg") ;;
     esac
 done
 
-if [ "$SYSTEM" -eq 1 ]; then
-    COLOR_SCHEME_DIR="/usr/share/color-schemes"
-    ICON_DIR="/usr/share/icons"
-    LOOKANDFEEL_DIR="/usr/share/plasma/look-and-feel"
-    NEED_SUDO=1
-else
-    COLOR_SCHEME_DIR="$HOME/.local/share/color-schemes"
-    ICON_DIR="$HOME/.local/share/icons"
-    LOOKANDFEEL_DIR="$HOME/.local/share/plasma/look-and-feel"
-    NEED_SUDO=0
-fi
-
-run() {
-    if [ "$NEED_SUDO" -eq 1 ]; then
-        sudo "$@"
+curl_auth() {
+    if [ -n "$TOKEN" ]; then
+        curl -fsSL -H "Authorization: Bearer $TOKEN" "$@"
     else
-        "$@"
+        curl -fsSL "$@"
     fi
 }
 
-echo "==> Installing icon theme to $ICON_DIR/BeardedIcons"
-run mkdir -p "$ICON_DIR"
-run cp -r "$SCRIPT_DIR/icons/BeardedIcons" "$ICON_DIR/"
-if command -v gtk-update-icon-cache >/dev/null 2>&1; then
-    run gtk-update-icon-cache --force --ignore-theme-index "$ICON_DIR/BeardedIcons" || true
+echo "==> Checking latest release of $REPO" >&2
+RELEASE_JSON="$(curl_auth "$API_URL")"
+
+# variant<TAB>asset-name<TAB>download-url for every .zip asset; variant is
+# the asset filename with its trailing -<version>.zip stripped. Pairs each
+# "name" line ending in .zip with the "browser_download_url" line that
+# follows it inside the same asset object -- good enough since GitHub's
+# release JSON is stable, pretty-printed, one field per line.
+VARIANTS="$(echo "$RELEASE_JSON" | awk '
+    /"name": *"[^"]*\.zip"/ {
+        line = $0
+        sub(/.*"name": *"/, "", line)
+        sub(/\.zip".*/, "", line)
+        full = line
+        variant = line
+        sub(/-[^-]+$/, "", variant)
+        pending_full = full
+        pending_variant = variant
+        next
+    }
+    /"browser_download_url":/ && pending_variant != "" {
+        line = $0
+        sub(/.*"browser_download_url": *"/, "", line)
+        sub(/".*/, "", line)
+        print pending_variant "\t" pending_full ".zip\t" line
+        pending_variant = ""
+    }
+')"
+
+if [ -z "$VARIANTS" ]; then
+    echo "error: no .zip assets found on the latest release of $REPO" >&2
+    exit 1
 fi
 
-THEME_DIRS=()
-if [ -n "$ONLY_THEME" ]; then
-    if [ ! -d "$SCRIPT_DIR/themes/$ONLY_THEME" ]; then
-        echo "error: no theme variant '$ONLY_THEME' under themes/" >&2
+if [ "$LIST_ONLY" -eq 1 ]; then
+    echo "Available variants:"
+    echo "$VARIANTS" | cut -f1 | sed 's/^/  - /'
+    exit 0
+fi
+
+if [ -z "$VARIANT" ]; then
+    if [ ! -t 0 ]; then
+        echo "error: no --variant=<name> given and not running interactively -- use --list to see options" >&2
         exit 1
     fi
-    THEME_DIRS=("$SCRIPT_DIR/themes/$ONLY_THEME")
-else
-    for d in "$SCRIPT_DIR"/themes/*/; do
-        THEME_DIRS+=("${d%/}")
-    done
+    echo "Available variants:"
+    i=1
+    NAMES=()
+    while IFS=$'\t' read -r variant _name _url; do
+        echo "  $i) $variant"
+        NAMES+=("$variant")
+        i=$((i + 1))
+    done <<< "$VARIANTS"
+    read -rp "Install which variant? [1-$((i - 1))]: " CHOICE
+    VARIANT="${NAMES[$((CHOICE - 1))]:-}"
 fi
 
-APPLY_ID=""
-for THEME_DIR in "${THEME_DIRS[@]}"; do
-    SLUG="$(basename "$THEME_DIR")"
-    echo "==> Installing theme variant: $SLUG"
-
-    COLORS_FILE=$(find "$THEME_DIR/color-schemes" -maxdepth 1 -name '*.colors' | head -n1)
-    echo "    color scheme -> $COLOR_SCHEME_DIR"
-    run mkdir -p "$COLOR_SCHEME_DIR"
-    run cp "$COLORS_FILE" "$COLOR_SCHEME_DIR/"
-
-    LOOKANDFEEL_PKG=$(find "$THEME_DIR/look-and-feel" -maxdepth 1 -mindepth 1 -type d | head -n1)
-    LOOKANDFEEL_ID="$(basename "$LOOKANDFEEL_PKG")"
-    echo "    global theme -> $LOOKANDFEEL_DIR/$LOOKANDFEEL_ID"
-    run mkdir -p "$LOOKANDFEEL_DIR"
-    run cp -r "$LOOKANDFEEL_PKG" "$LOOKANDFEEL_DIR/"
-
-    GHOSTTY_FILE=$(find "$THEME_DIR/ghostty-theme" -maxdepth 1 -type f | head -n1)
-    GHOSTTY_THEMES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/themes"
-    echo "    Ghostty theme -> $GHOSTTY_THEMES_DIR"
-    mkdir -p "$GHOSTTY_THEMES_DIR"
-    cp "$GHOSTTY_FILE" "$GHOSTTY_THEMES_DIR/"
-
-    ZSH_FILE=$(find "$THEME_DIR/zsh-theme" -maxdepth 1 -type f | head -n1)
-    if [ -d "$HOME/.oh-my-zsh" ]; then
-        ZSH_THEME_DIR="$HOME/.oh-my-zsh/custom/themes"
-    else
-        ZSH_THEME_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/themes"
-    fi
-    echo "    zsh theme -> $ZSH_THEME_DIR"
-    mkdir -p "$ZSH_THEME_DIR"
-    cp "$ZSH_FILE" "$ZSH_THEME_DIR/"
-
-    if [ "$WITH_PLYMOUTH" -eq 1 ]; then
-        PLYMOUTH_THEME_DIR=$(find "$THEME_DIR/plymouth" -maxdepth 1 -mindepth 1 -type d | head -n1)
-        PLYMOUTH_ID="$(basename "$PLYMOUTH_THEME_DIR")"
-        echo "    Plymouth boot theme -> /usr/share/plymouth/themes/$PLYMOUTH_ID (needs sudo, rebuilds initramfs)"
-        sudo mkdir -p "/usr/share/plymouth/themes/$PLYMOUTH_ID"
-        sudo cp "$PLYMOUTH_THEME_DIR"/* "/usr/share/plymouth/themes/$PLYMOUTH_ID/"
-        if command -v plymouth-set-default-theme >/dev/null 2>&1; then
-            sudo plymouth-set-default-theme -R "$PLYMOUTH_ID"
-        else
-            echo "    plymouth-set-default-theme not found; install/enable Plymouth manually, then run:"
-            echo "      sudo plymouth-set-default-theme -R $PLYMOUTH_ID"
-        fi
-    fi
-
-    APPLY_ID="$LOOKANDFEEL_ID"
-    echo "    Chrome theme:  chrome://extensions > Developer mode > Load unpacked > $THEME_DIR/chrome-theme/"
-    echo "    Firefox theme: about:debugging > This Firefox > Load Temporary Add-on > $THEME_DIR/firefox-theme/manifest.json"
-done
-
-if command -v kbuildsycoca6 >/dev/null 2>&1; then
-    kbuildsycoca6 >/dev/null 2>&1 || true
+MATCH="$(echo "$VARIANTS" | awk -F'\t' -v v="$VARIANT" '$1 == v')"
+if [ -z "$MATCH" ]; then
+    echo "error: no variant named '$VARIANT' in the latest release -- use --list to see options" >&2
+    exit 1
 fi
 
-if [ "$APPLY" -eq 1 ]; then
-    if [ "${#THEME_DIRS[@]}" -ne 1 ]; then
-        echo "error: --apply requires exactly one theme variant -- pass --theme=<slug>" >&2
-        exit 1
-    fi
-    echo "==> Applying the $APPLY_ID global theme"
-    if command -v plasma-apply-lookandfeel >/dev/null 2>&1; then
-        plasma-apply-lookandfeel -a "$APPLY_ID"
-    else
-        echo "    plasma-apply-lookandfeel not found; apply manually via System Settings > Appearance > Global Themes."
-    fi
-fi
+ASSET_NAME="$(echo "$MATCH" | cut -f2)"
+ASSET_URL="$(echo "$MATCH" | cut -f3)"
 
-echo "==> Done."
-[ "$APPLY" -eq 0 ] && echo "    Apply a theme via System Settings > Appearance > Global Themes, or re-run with --theme=<slug> --apply."
-[ "$WITH_PLYMOUTH" -eq 0 ] && echo "    Boot splash not installed; re-run with --with-plymouth to install it."
+WORK_DIR="$(mktemp -d)"
+trap 'rm -rf "$WORK_DIR"' EXIT
+
+echo "==> Downloading $ASSET_NAME" >&2
+curl_auth "$ASSET_URL" -o "$WORK_DIR/$ASSET_NAME"
+
+echo "==> Extracting" >&2
+unzip -q "$WORK_DIR/$ASSET_NAME" -d "$WORK_DIR"
+
+EXTRACTED_DIR="$(find "$WORK_DIR" -mindepth 1 -maxdepth 1 -type d | head -n1)"
+if [ -z "$EXTRACTED_DIR" ] || [ ! -f "$EXTRACTED_DIR/install.sh" ]; then
+    echo "error: extracted archive doesn't contain install.sh -- unexpected zip layout" >&2
+    exit 1
+fi
+chmod +x "$EXTRACTED_DIR/install.sh"
+
+echo "==> Running installer from $ASSET_NAME" >&2
+"$EXTRACTED_DIR/install.sh" "${FORWARD_ARGS[@]}"

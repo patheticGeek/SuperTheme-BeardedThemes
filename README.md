@@ -52,10 +52,41 @@ icons, actions, devices, etc.).
 
 ## Install
 
+**Quickest way — no clone, no build.** Downloads the latest release,
+lets you pick a variant, installs it. Needs only `curl` and `unzip`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/patheticGeek/SuperTheme-BeardedThemes/main/install.sh | bash
+```
+
+Or, if you'd rather inspect it first (recommended before piping anything to
+`bash`):
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/patheticGeek/SuperTheme-BeardedThemes/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+| Flag                 | Effect                                                                 |
+|----------------------|-------------------------------------------------------------------------|
+| `--variant=<name>`   | Install a specific variant non-interactively (e.g. `BeardedGold`) — see `--list` |
+| `--all`              | Install the SuperTheme (every variant) non-interactively               |
+| `--list`             | Print available variants from the latest release and exit              |
+| `--apply`            | Apply the KDE global theme immediately after installing (forwarded to the installer) |
+| `--system`           | Install system-wide instead of per-user (needs `sudo`, forwarded)      |
+| `--with-plymouth`    | Also install the boot splash(es) (needs `sudo`, forwarded)             |
+
+If the repo is private, set `GITHUB_TOKEN` (or `GH_TOKEN`) to a token with
+read access first.
+
+**From a local checkout** — for development, or if you've already cloned
+the repo and built `themes/` yourself (see [AGENTS.md](AGENTS.md)):
+
 ```sh
 git clone --recurse-submodules https://github.com/patheticGeek/SuperTheme-BeardedThemes.git BeardedThemes
 cd BeardedThemes
-./install.sh --apply
+./install-dev.sh --apply
 ```
 
 By default this installs every variant under `themes/` -- the color scheme,
@@ -75,7 +106,7 @@ Options:
 | `--with-plymouth`    | Also install the boot splash(es) to `/usr/share/plymouth/themes` and rebuild your initramfs (needs `sudo`) |
 
 ```sh
-./install.sh --theme=black-and-diamond --apply
+./install-dev.sh --theme=black-and-diamond --apply
 ```
 
 Without `--apply`, apply a theme manually via *System Settings → Appearance
@@ -115,7 +146,7 @@ Edition/Nightly with `xpinstall.signatures.required` set to `false`.
 
 ## Ghostty theme
 
-`install.sh` copies each variant's `ghostty-theme/<Ident>` to
+The installer copies each variant's `ghostty-theme/<Ident>` to
 `~/.config/ghostty/themes/<Ident>`. Enable it by adding to your Ghostty
 config:
 
@@ -125,7 +156,7 @@ theme = BeardedDiamond
 
 ## zsh theme
 
-`install.sh` installs each variant's `zsh-theme/<id>.zsh-theme` to your
+The installer installs each variant's `zsh-theme/<id>.zsh-theme` to your
 oh-my-zsh custom themes directory (if oh-my-zsh is installed) or to
 `~/.config/zsh/themes/` otherwise. Enable it with either:
 

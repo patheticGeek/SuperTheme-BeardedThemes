@@ -30,6 +30,7 @@ jobs:
       - name: Validate shell scripts
         run: |
           bash -n install.sh
+          bash -n install-dev.sh
           bash -n package.sh
           bash -n scripts/update-from-upstream.sh
           for f in themes/*/zsh-theme/*.zsh-theme; do
