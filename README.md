@@ -4,7 +4,8 @@ Cross-application themes generated from the [Bearded Theme](https://github.com/B
 VS Code color theme family and its companion "Bearded Icons" icon pack.
 Each variant lives under `themes/<slug>/`; currently registered:
 `black-and-diamond` ("Black & Diamond": cyan accent, gold highlight/cursor
-tones) and `black-and-gold` ("Black & Gold": gold accent throughout). Both
+tones), `black-and-gold` ("Black & Gold": gold accent throughout), and
+`black-and-emerald` ("Black & Emerald": emerald/teal accent throughout). All
 share the same near-black UI otherwise. The pipeline supports adding any of
 the ~66 upstream variants — see [AGENTS.md](AGENTS.md).
 
@@ -68,24 +69,23 @@ chmod +x install.sh
 ./install.sh
 ```
 
-| Flag                 | Effect                                                                 |
-|----------------------|-------------------------------------------------------------------------|
-| `--variant=<name>`   | Install a specific variant non-interactively (e.g. `BeardedGold`) — see `--list` |
-| `--all`              | Install the SuperTheme (every variant) non-interactively               |
-| `--list`             | Print available variants from the latest release and exit              |
-| `--apply`            | Apply the KDE global theme immediately after installing (forwarded to the installer) |
-| `--system`           | Install system-wide instead of per-user (needs `sudo`, forwarded)      |
-| `--with-plymouth`    | Also install the boot splash(es) (needs `sudo`, forwarded)             |
+| Flag               | Effect                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| `--variant=<name>` | Install a specific variant non-interactively (e.g. `BeardedGold`) — see `--list`     |
+| `--all`            | Install the SuperTheme (every variant) non-interactively                             |
+| `--list`           | Print available variants from the latest release and exit                            |
+| `--apply`          | Apply the KDE global theme immediately after installing (forwarded to the installer) |
+| `--system`         | Install system-wide instead of per-user (needs `sudo`, forwarded)                    |
+| `--with-plymouth`  | Also install the boot splash(es) (needs `sudo`, forwarded)                           |
 
-If the repo is private, set `GITHUB_TOKEN` (or `GH_TOKEN`) to a token with
-read access first.
-
-**From a local checkout** — for development, or if you've already cloned
-the repo and built `themes/` yourself (see [AGENTS.md](AGENTS.md)):
+**From a local checkout** — for development. `themes/` is generated (not
+committed to the repo — see [AGENTS.md](AGENTS.md)), so build it once after
+cloning:
 
 ```sh
 git clone --recurse-submodules https://github.com/patheticGeek/SuperTheme-BeardedThemes.git BeardedThemes
 cd BeardedThemes
+./scripts/build-all.sh   # builds themes/ for every registered variant (needs node/npm, python3+Pillow)
 ./install-dev.sh --apply
 ```
 
@@ -98,19 +98,19 @@ Firefox themes are browser extensions and are always installed manually
 
 Options:
 
-| Flag               | Effect                                                                 |
-|---------------------|-------------------------------------------------------------------------|
-| `--theme=<slug>`    | Only install the named variant (see `themes/` for available slugs)     |
-| `--apply`           | Apply the KDE global theme immediately after installing (requires exactly one variant, i.e. combine with `--theme=`) |
-| `--system`           | Install into `/usr/share/...` instead of `~/.local/share/...` (needs `sudo`) |
-| `--with-plymouth`    | Also install the boot splash(es) to `/usr/share/plymouth/themes` and rebuild your initramfs (needs `sudo`) |
+| Flag              | Effect                                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `--theme=<slug>`  | Only install the named variant (see `themes/` for available slugs)                                                   |
+| `--apply`         | Apply the KDE global theme immediately after installing (requires exactly one variant, i.e. combine with `--theme=`) |
+| `--system`        | Install into `/usr/share/...` instead of `~/.local/share/...` (needs `sudo`)                                         |
+| `--with-plymouth` | Also install the boot splash(es) to `/usr/share/plymouth/themes` and rebuild your initramfs (needs `sudo`)           |
 
 ```sh
 ./install-dev.sh --theme=black-and-diamond --apply
 ```
 
-Without `--apply`, apply a theme manually via *System Settings → Appearance
-→ Global Themes*.
+Without `--apply`, apply a theme manually via _System Settings → Appearance
+→ Global Themes_.
 
 The Plymouth boot theme is opt-in and separate from the rest because it's a
 system-level, root-owned change that affects every boot and requires

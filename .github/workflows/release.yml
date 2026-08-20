@@ -27,6 +27,12 @@ jobs:
       - name: Install zsh (for theme syntax check)
         run: sudo apt-get update && sudo apt-get install -y zsh
 
+      - name: Install Pillow (for image generation)
+        run: pip install --user Pillow
+
+      - name: Build themes/ for every registered variant
+        run: ./scripts/build-all.sh
+
       - name: Validate shell scripts
         run: |
           bash -n install.sh

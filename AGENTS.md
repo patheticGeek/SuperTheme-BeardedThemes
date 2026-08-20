@@ -7,10 +7,14 @@ Theme** VS Code theme family (vendored as a git submodule at
 <https://github.com/BeardedBear/bearded-theme>) and its companion
 **Bearded Icons** icon pack (vendored at `vendor/bearded-icons`, upstream:
 <https://github.com/BeardedBear/bearded-icons>, shared by every variant).
-Each variant lives under `themes/<slug>/`; currently registered:
-`black-and-diamond` (from upstream's "Black & Diamond") and `black-and-gold`
-(from "Black & Gold") -- see "Adding a new theme variant" below for wiring
-in more of the ~66 upstream variants.
+Each variant lives under `themes/<slug>/` — generated output, gitignored
+(not committed; rebuild it with `./scripts/build-all.sh` after cloning, or
+per-variant with `./scripts/regenerate.py`/`update-from-upstream.sh` below).
+Currently registered:
+`black-and-diamond` (from upstream's "Black & Diamond"), `black-and-gold`
+(from "Black & Gold"), and `black-and-emerald` (from "Black & Emerald") --
+see "Adding a new theme variant" below for wiring in more of the ~66
+upstream variants.
 
 If you are an AI coding agent asked to "update this theme", "sync with
 upstream", "refresh the colors", "add a new Bearded Theme variant", or
@@ -80,10 +84,13 @@ Run the one script that does everything:
    - `zsh-theme/<id_lower>.zsh-theme` (prompt colors)
 4. Prints a diff summary.
 
-Nothing is committed automatically. After it runs:
+Nothing is committed automatically. `themes/` itself is gitignored, so
+there's nothing to commit there -- but `vendor/bearded-theme` was just
+fast-forwarded to a new upstream commit, which IS tracked (as a submodule
+pointer). After it runs:
 
 ```sh
-git diff --stat                 # review what changed
+git diff --stat                 # review the submodule pointer bump etc.
 ./package.sh <new-version>      # rebuild the distributable SuperTheme zip
 git add -A
 git commit -m "Sync colors with upstream bearded-theme <short-sha>"
