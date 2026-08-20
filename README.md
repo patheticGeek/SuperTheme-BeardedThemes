@@ -47,6 +47,14 @@ Icons VS Code extension, covering the most common languages and file
 formats. Inherits Breeze Dark for everything not explicitly themed (app
 icons, actions, devices, etc.).
 
+## Screenshots
+
+| VS Code | Terminal (Ghostty) |
+| --- | --- |
+| ![VS Code](docs/images/editor-vs-code.png) | ![Terminal (Ghostty)](docs/images/terminal-ghostty.png) |
+| **Browser (Chrome)** | **Desktop / Native Apps** |
+| ![Browser (Chrome)](docs/images/browser-chrome.png) | ![Desktop / Native Apps](docs/images/desktop-native-apps.png) |
+
 ## Install
 
 **Quickest way — no clone, no build.** Downloads the latest release,
