@@ -40,10 +40,6 @@ Each theme variant under `themes/<slug>/` includes:
 - **Ghostty theme** (`ghostty-theme/<Ident>`) — a terminal color scheme
   (16-color ANSI palette, background/foreground, cursor, selection) for the
   [Ghostty](https://ghostty.org) terminal emulator.
-- **zsh prompt theme** (`zsh-theme/<id>.zsh-theme`) — a lightweight prompt
-  (user@host, cwd, git branch, background-job and exit-status indicators)
-  using zsh's native truecolor escapes. Works standalone or as an
-  oh-my-zsh custom theme.
 
 The **icon theme** (`icons/BeardedIcons`, shared by all variants) has
 folder icons plus ~90 file-type (mimetype) icons ported from the Bearded
@@ -90,8 +86,8 @@ cd BeardedThemes
 ```
 
 By default this installs every variant under `themes/` -- the color scheme,
-KDE global theme, Ghostty theme, and zsh theme for each -- plus the shared
-icon theme, into your user's config/XDG data directories
+KDE global theme, and Ghostty theme for each -- plus the shared icon theme,
+into your user's config/XDG data directories
 (`~/.local/share/...`, `~/.config/...`) — no root required. The Chrome and
 Firefox themes are browser extensions and are always installed manually
 (see below).
@@ -154,20 +150,6 @@ config:
 theme = BeardedDiamond
 ```
 
-## zsh theme
-
-The installer installs each variant's `zsh-theme/<id>.zsh-theme` to your
-oh-my-zsh custom themes directory (if oh-my-zsh is installed) or to
-`~/.config/zsh/themes/` otherwise. Enable it with either:
-
-```sh
-# oh-my-zsh: in ~/.zshrc
-ZSH_THEME="beardeddiamond"
-
-# plain zsh: in ~/.zshrc
-source ~/.config/zsh/themes/beardeddiamond.zsh-theme
-```
-
 ## Building a distributable package
 
 ```sh
@@ -198,7 +180,6 @@ rm -f  ~/.local/share/color-schemes/BeardedDiamond.colors
 rm -rf ~/.local/share/icons/BeardedIcons
 rm -rf ~/.local/share/plasma/look-and-feel/org.kde.beardeddiamond.desktop
 rm -f  ~/.config/ghostty/themes/BeardedDiamond
-rm -f  ~/.oh-my-zsh/custom/themes/beardeddiamond.zsh-theme  # or ~/.config/zsh/themes/...
 # if installed with --with-plymouth:
 sudo rm -rf /usr/share/plymouth/themes/beardeddiamond
 sudo plymouth-set-default-theme -R <previous-theme>

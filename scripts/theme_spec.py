@@ -5,7 +5,7 @@ needs besides the color palette itself, plus the upstream registry options
 
 Add new variants to REGISTRY below -- that's the only place a new Bearded
 Theme variation needs to be wired in to get colors, chrome/firefox/ghostty/
-zsh/plymouth/KDE output. See AGENTS.md for the end-to-end steps.
+plymouth/KDE output. See AGENTS.md for the end-to-end steps.
 """
 
 import os
@@ -22,7 +22,7 @@ class ThemeSpec:
     upstream_name: str  # vendor/bearded-theme's registry `name`, e.g. "Black & Diamond"
     display_name: str  # our product-facing name, e.g. "Bearded Diamond"
     ident: str  # PascalCase identifier, e.g. "BeardedDiamond" -- used for
-    # ColorScheme=, .colors/ghostty/zsh-theme filenames
+    # ColorScheme=, .colors/ghostty filenames
     id_lower: str  # lowercase identifier, e.g. "beardeddiamond" -- used for
     # the KDE look-and-feel package id and the Plymouth theme dir name
     options: dict = field(default_factory=dict)  # light / hc / desaturateInputs

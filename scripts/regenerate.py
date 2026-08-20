@@ -10,9 +10,9 @@ slug defaults to the only entry currently in scripts/theme_spec.py's
 REGISTRY ("black-and-diamond"); pass it explicitly once more variants are
 registered there. This script only touches colors (color scheme, Chrome
 theme, Firefox theme, Plymouth boot theme, Plasma splash + look-and-feel
-metadata, Ghostty theme, zsh prompt theme) -- it does NOT touch
-icons/BeardedIcons, which is ported from the separate 'bearded-icons' VS
-Code extension and updated manually (shared across all variants).
+metadata, Ghostty theme) -- it does NOT touch icons/BeardedIcons, which is
+ported from the separate 'bearded-icons' VS Code extension and updated
+manually (shared across all variants).
 """
 
 import os
@@ -30,7 +30,6 @@ import gen_lookandfeel_meta  # noqa: E402
 import gen_kde_preview  # noqa: E402
 import gen_browser_icons  # noqa: E402
 import gen_ghostty  # noqa: E402
-import gen_zsh_theme  # noqa: E402
 
 
 def regenerate_one(theme_json_path, spec):
@@ -45,7 +44,6 @@ def regenerate_one(theme_json_path, spec):
     gen_lookandfeel_meta.generate(palette, spec)
     gen_kde_preview.generate(palette, spec)
     gen_ghostty.generate(palette, spec)
-    gen_zsh_theme.generate(palette, spec)
 
 
 def main():

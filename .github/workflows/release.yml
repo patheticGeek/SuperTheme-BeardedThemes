@@ -24,9 +24,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Install zsh (for theme syntax check)
-        run: sudo apt-get update && sudo apt-get install -y zsh
-
       - name: Install Pillow (for image generation)
         run: pip install --user Pillow
 
@@ -39,9 +36,6 @@ jobs:
           bash -n install-dev.sh
           bash -n package.sh
           bash -n scripts/update-from-upstream.sh
-          for f in themes/*/zsh-theme/*.zsh-theme; do
-            zsh -n "$f"
-          done
 
       - name: Validate JSON manifests
         run: |

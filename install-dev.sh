@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Installs Bearded Diamond theme variant(s) from the themes/ directory next
-# to this script: KDE Plasma global theme, Ghostty terminal theme, and zsh
-# prompt theme.
+# to this script: KDE Plasma global theme and Ghostty terminal theme.
 #
 # This installs from LOCAL FILES ONLY -- it doesn't download anything. It's
 # what ships inside every release zip (as install.sh, self-contained with
@@ -19,8 +18,8 @@
 #
 # Usage:
 #   ./install-dev.sh                 install color scheme, icons, global theme,
-#                                     Ghostty theme, zsh theme (user-level) for
-#                                     every variant under themes/
+#                                     Ghostty theme (user-level) for every
+#                                     variant under themes/
 #   ./install-dev.sh --theme=<slug>  only install the named variant (see
 #                                     themes/ for available slugs)
 #   ./install-dev.sh --apply         also apply the KDE global theme immediately
@@ -45,7 +44,7 @@ for arg in "$@"; do
         --with-plymouth) WITH_PLYMOUTH=1 ;;
         --theme=*) ONLY_THEME="${arg#--theme=}" ;;
         --help|-h)
-            sed -n '2,31p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
             exit 0
             ;;
         *)
@@ -116,16 +115,6 @@ for THEME_DIR in "${THEME_DIRS[@]}"; do
     echo "    Ghostty theme -> $GHOSTTY_THEMES_DIR"
     mkdir -p "$GHOSTTY_THEMES_DIR"
     cp "$GHOSTTY_FILE" "$GHOSTTY_THEMES_DIR/"
-
-    ZSH_FILE=$(find "$THEME_DIR/zsh-theme" -maxdepth 1 -type f | head -n1)
-    if [ -d "$HOME/.oh-my-zsh" ]; then
-        ZSH_THEME_DIR="$HOME/.oh-my-zsh/custom/themes"
-    else
-        ZSH_THEME_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/themes"
-    fi
-    echo "    zsh theme -> $ZSH_THEME_DIR"
-    mkdir -p "$ZSH_THEME_DIR"
-    cp "$ZSH_FILE" "$ZSH_THEME_DIR/"
 
     if [ "$WITH_PLYMOUTH" -eq 1 ]; then
         PLYMOUTH_THEME_DIR=$(find "$THEME_DIR/plymouth" -maxdepth 1 -mindepth 1 -type d | head -n1)

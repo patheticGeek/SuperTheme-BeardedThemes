@@ -1,6 +1,6 @@
 # AGENTS.md — Updating Bearded Diamond from upstream
 
-This repo is a set of KDE Plasma 6 global themes, Chrome/Firefox/Ghostty/zsh
+This repo is a set of KDE Plasma 6 global themes, Chrome/Firefox/Ghostty
 themes, and boot splashes, each derived from one variant of the **Bearded
 Theme** VS Code theme family (vendored as a git submodule at
 `vendor/bearded-theme`, upstream:
@@ -81,7 +81,6 @@ Run the one script that does everything:
      `previews/{preview.png,fullscreenpreview.jpg}` -- the theme-picker
      mockup)
    - `ghostty-theme/<Ident>` (16-color ANSI palette + UI colors)
-   - `zsh-theme/<id_lower>.zsh-theme` (prompt colors)
 4. Prints a diff summary.
 
 Nothing is committed automatically. `themes/` itself is gitignored, so
