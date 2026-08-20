@@ -1,5 +1,7 @@
 # Bearded Diamond — KDE Plasma 6 Global Theme
 
+**[patheticgeek.github.io/SuperTheme-BeardedThemes](https://patheticgeek.github.io/SuperTheme-BeardedThemes/)**
+
 Cross-application themes generated from the [Bearded Theme](https://github.com/BeardedBear/bearded-theme)
 VS Code color theme family and its companion "Bearded Icons" icon pack.
 Each variant lives under `themes/<slug>/`; currently registered:
@@ -194,6 +196,21 @@ sudo plymouth-set-default-theme -R <previous-theme>
 ```
 
 Then switch to a different global theme in System Settings.
+
+## Website
+
+`www/` is the project site published to GitHub Pages by
+`.github/workflows/pages.yml` on every push to `main` that touches `www/` or
+`docs/images/`. It's plain HTML/CSS/JS -- no build step. The screenshots aren't
+duplicated into `www/`; the workflow copies `docs/images/` in as `www/images/`
+at deploy time (hence `www/.gitignore`). To preview locally:
+
+```sh
+./scripts/serve-www.sh        # symlinks the images in, serves http://localhost:8000
+```
+
+Publishing requires _Settings → Pages → Source_ set to **GitHub Actions** once,
+in the repo settings.
 
 ## Credits
 

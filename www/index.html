@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-variant="emerald">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bearded Themes for KDE — desktop, terminal, browser, boot</title>
+<meta name="description" content="Cross-application themes for KDE Plasma 6 generated from the Bearded Theme VS Code family. Global theme, icons, Ghostty, Chrome, Firefox and Plymouth boot splash — one install.">
+<meta name="theme-color" content="#0b0e11">
+<meta property="og:title" content="Bearded Themes for KDE Plasma 6">
+<meta property="og:description" content="One palette, everywhere: desktop, terminal, browser and boot splash — generated from the Bearded Theme VS Code family.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="glow" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-name">Bearded<span class="brand-accent">Themes</span></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#screenshots">Screenshots</a>
+    <a href="#included">What's inside</a>
+    <a href="#install">Install</a>
+    <a href="#palette">Palette</a>
+    <a class="nav-gh" href="https://github.com/patheticGeek/SuperTheme-BeardedThemes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      GitHub
+    </a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <p class="eyebrow">KDE Plasma 6 · Ghostty · Chrome · Firefox · Plymouth</p>
+    <h1>One palette.<br><span class="grad">Your whole machine.</span></h1>
+    <p class="lede">
+      Cross-application themes generated from
+      <a href="https://github.com/BeardedBear" target="_blank" rel="noopener">BeardedBear</a>'s
+      <a href="https://github.com/BeardedBear/bearded-theme" target="_blank" rel="noopener">Bearded&nbsp;Theme</a>
+      VS&nbsp;Code family — their colours, carried across the desktop, the terminal,
+      the browser and even the boot splash by one reproducible pipeline.
+    </p>
+
+    <div class="cta">
+      <div class="cmd" role="group" aria-label="Install command">
+        <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/patheticGeek/SuperTheme-BeardedThemes/main/install.sh | bash</code>
+        <button class="copy" data-copy="#install-cmd" aria-label="Copy install command">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 9h10v10H9zM5 15H4V4h11v1"/></svg>
+          <span>Copy</span>
+        </button>
+      </div>
+      <a class="btn btn-ghost" href="https://github.com/patheticGeek/SuperTheme-BeardedThemes/releases/latest" target="_blank" rel="noopener">Download latest release</a>
+    </div>
+
+    <p class="hero-note">Needs only <code>curl</code> and <code>unzip</code>. Installs per-user — no root, nothing to uninstall but a few directories.</p>
+  </section>
+
+  <section class="variants" aria-labelledby="variants-h">
+    <h2 id="variants-h" class="sr-only">Choose a variant</h2>
+    <p class="switcher-label">Try a variant — the whole page follows along</p>
+    <div class="switcher" role="radiogroup" aria-label="Theme variant">
+      <button role="radio" aria-checked="false" data-variant="diamond" style="--sw:#11B7D4">
+        <span class="dot"></span> Black &amp; Diamond
+      </button>
+      <button role="radio" aria-checked="false" data-variant="gold" style="--sw:#c7910c">
+        <span class="dot"></span> Black &amp; Gold
+      </button>
+      <button role="radio" aria-checked="true" data-variant="emerald" style="--sw:#38c7bd">
+        <span class="dot"></span> Black &amp; Emerald
+      </button>
+    </div>
+
+    <div class="preview">
+      <div class="win">
+        <div class="win-bar">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="win-title" id="win-title">BeardedEmerald — ~/Projects</span>
+        </div>
+        <pre class="term"><span class="c-prompt">❯</span> <span class="c-cmd">./install.sh</span> --variant=<span class="c-arg" id="live-ident">BeardedEmerald</span> --apply
+<span class="c-dim">==&gt;</span> Installing icon theme to ~/.local/share/icons/BeardedIcons
+<span class="c-dim">==&gt;</span> Installing theme variant: <span class="c-ok" id="live-slug">black-and-emerald</span>
+    color scheme  <span class="c-dim">-&gt;</span> ~/.local/share/color-schemes
+    global theme  <span class="c-dim">-&gt;</span> ~/.local/share/plasma/look-and-feel
+    Ghostty theme <span class="c-dim">-&gt;</span> ~/.config/ghostty/themes
+<span class="c-dim">==&gt;</span> Applying the <span class="c-accent" id="live-id">org.kde.beardedemerald.desktop</span> global theme
+<span class="c-dim">==&gt;</span> Done.<span class="caret"></span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots" class="section">
+    <h2>Screenshots</h2>
+    <p class="section-sub">Every surface, one set of colours.</p>
+
+    <div class="shots">
+      <figure>
+        <a href="images/editor-vs-code.png" target="_blank" rel="noopener">
+          <img src="images/editor-vs-code.png" alt="VS Code with the Bearded Emerald theme" loading="lazy" decoding="async">
+        </a>
+        <figcaption>Editor — VS&nbsp;Code</figcaption>
+      </figure>
+      <figure>
+        <a href="images/terminal-ghostty.png" target="_blank" rel="noopener">
+          <img src="images/terminal-ghostty.png" alt="Ghostty terminal with the Bearded Emerald theme" loading="lazy" decoding="async">
+        </a>
+        <figcaption>Terminal — Ghostty</figcaption>
+      </figure>
+      <figure>
+        <a href="images/browser-chrome.png" target="_blank" rel="noopener">
+          <img src="images/browser-chrome.png" alt="Chrome with the Bearded Emerald browser theme" loading="lazy" decoding="async">
+        </a>
+        <figcaption>Browser — Chrome</figcaption>
+      </figure>
+      <figure>
+        <a href="images/desktop-native-apps.png" target="_blank" rel="noopener">
+          <img src="images/desktop-native-apps.png" alt="KDE Plasma desktop and native apps with the Bearded Emerald theme" loading="lazy" decoding="async">
+        </a>
+        <figcaption>Desktop &amp; native apps</figcaption>
+      </figure>
+    </div>
+
+    <aside class="note">
+      <span class="note-icon" aria-hidden="true">★</span>
+      <p>
+        <strong>A note on these shots:</strong> they all show <em>Black&nbsp;&amp;&nbsp;Emerald</em>,
+        which is my personal favourite. In the interest of time I haven't captured
+        the other variants — they look exactly the same, just with a different
+        accent colour running through them. Hit the switcher above for a feel, or
+        install one and see for yourself.
+      </p>
+    </aside>
+  </section>
+
+  <section id="included" class="section">
+    <h2>What's inside</h2>
+    <p class="section-sub">One install, every layer of the desktop.</p>
+
+    <div class="cards">
+      <article class="card">
+        <h3>KDE global theme</h3>
+        <p>A full Plasma&nbsp;6 look-and-feel package: colour scheme for windows, views, buttons, selection, tooltips and window decorations — plus a matching splash screen at session start.</p>
+      </article>
+      <article class="card">
+        <h3>Icon theme</h3>
+        <p>~90 file-type icons and folder icons ported from <a href="https://github.com/BeardedBear/bearded-icons" target="_blank" rel="noopener">Bearded&nbsp;Icons</a>, inheriting Breeze&nbsp;Dark for anything not explicitly themed.</p>
+      </article>
+      <article class="card">
+        <h3>Ghostty terminal</h3>
+        <p>A 16-colour ANSI palette with background, foreground, cursor and selection colours, dropped straight into <code>~/.config/ghostty/themes</code>.</p>
+      </article>
+      <article class="card">
+        <h3>Chrome &amp; Firefox</h3>
+        <p>The same palette mapped to browser theme keys — frame, tabs, toolbar, address bar, popups and new-tab page. Load unpacked and you're done.</p>
+      </article>
+      <article class="card">
+        <h3>Plymouth boot splash</h3>
+        <p>The boot screen before you even log in, styled to match. Opt-in with <code>--with-plymouth</code>, since it needs root and an initramfs rebuild.</p>
+      </article>
+      <article class="card">
+        <h3>Reproducible by design</h3>
+        <p>Nothing is hand-painted. Every artifact is generated from upstream's theme JSON, so a new upstream release is one script away — and so is any of the ~66 other variants.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="install" class="section">
+    <h2>Install</h2>
+    <p class="section-sub">Pick whichever suits you.</p>
+
+    <div class="tabs">
+      <div class="tab-btns" role="tablist" aria-label="Install method">
+        <button role="tab" aria-selected="true" aria-controls="tab-quick" id="tabb-quick">Quick</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-src" id="tabb-src">From source</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-rm" id="tabb-rm">Uninstall</button>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="tab-quick" aria-labelledby="tabb-quick">
+        <p>Downloads the latest release, lets you pick a variant, installs it:</p>
+        <div class="cmd">
+          <code id="c1">curl -fsSL https://raw.githubusercontent.com/patheticGeek/SuperTheme-BeardedThemes/main/install.sh | bash</code>
+          <button class="copy" data-copy="#c1" aria-label="Copy"><span>Copy</span></button>
+        </div>
+        <p>Or grab it first and read it before running it — always a good habit:</p>
+        <div class="cmd">
+          <code id="c2">curl -fsSLO https://raw.githubusercontent.com/patheticGeek/SuperTheme-BeardedThemes/main/install.sh &amp;&amp; chmod +x install.sh &amp;&amp; ./install.sh</code>
+          <button class="copy" data-copy="#c2" aria-label="Copy"><span>Copy</span></button>
+        </div>
+        <table class="flags">
+          <thead><tr><th>Flag</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>--variant=&lt;name&gt;</code></td><td>Install one variant non-interactively (e.g. <code class="v-ident">BeardedEmerald</code>)</td></tr>
+            <tr><td><code>--all</code></td><td>Install every variant at once</td></tr>
+            <tr><td><code>--list</code></td><td>Print the variants in the latest release and exit</td></tr>
+            <tr><td><code>--apply</code></td><td>Apply the KDE global theme straight after installing</td></tr>
+            <tr><td><code>--system</code></td><td>Install system-wide instead of per-user (needs <code>sudo</code>)</td></tr>
+            <tr><td><code>--with-plymouth</code></td><td>Also install the boot splash (needs <code>sudo</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="tab-src" aria-labelledby="tabb-src" hidden>
+        <p>The <code>themes/</code> directory is generated rather than committed, so build it once after cloning:</p>
+        <div class="cmd cmd-block">
+          <code id="c3">git clone --recurse-submodules https://github.com/patheticGeek/SuperTheme-BeardedThemes.git BeardedThemes
+cd BeardedThemes
+./scripts/build-all.sh
+./install-dev.sh --theme=<span class="v-slug">black-and-emerald</span> --apply</code>
+          <button class="copy" data-copy="#c3" aria-label="Copy"><span>Copy</span></button>
+        </div>
+        <p class="muted">Needs <code>node</code>/<code>npm</code> (to build upstream's theme JSON) and <code>python3</code> with Pillow (to render the splash and icon images).</p>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="tab-rm" aria-labelledby="tabb-rm" hidden>
+        <p>It's all plain files in your home directory — remove the ones you installed:</p>
+        <div class="cmd cmd-block">
+          <code id="c4">rm -f  ~/.local/share/color-schemes/<span class="v-ident">BeardedEmerald</span>.colors
+rm -rf ~/.local/share/icons/BeardedIcons
+rm -rf ~/.local/share/plasma/look-and-feel/org.kde.<span class="v-id">beardedemerald</span>.desktop
+rm -f  ~/.config/ghostty/themes/<span class="v-ident">BeardedEmerald</span></code>
+          <button class="copy" data-copy="#c4" aria-label="Copy"><span>Copy</span></button>
+        </div>
+        <p class="muted">Then pick a different global theme in <em>System Settings → Appearance → Global Themes</em>. If you installed the boot splash, also <code>sudo rm -rf /usr/share/plymouth/themes/<span class="v-id">beardedemerald</span></code> and run <code>sudo plymouth-set-default-theme -R &lt;previous&gt;</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="palette" class="section">
+    <h2>Palette</h2>
+    <p class="section-sub">The near-black base stays put; the accent is what changes.</p>
+    <div class="swatches" id="swatches"></div>
+  </section>
+
+  <section class="section closing">
+    <h2>Built from upstream, every time</h2>
+    <p class="section-sub closing-sub">
+      Colours and icons are ported from <a href="https://github.com/BeardedBear/bearded-theme" target="_blank" rel="noopener">Bearded&nbsp;Theme</a>
+      and <a href="https://github.com/BeardedBear/bearded-icons" target="_blank" rel="noopener">Bearded&nbsp;Icons</a> by
+      BeardedBear, both GPL-3.0. Adding another of the ~66 upstream variants is a
+      handful of lines in a registry and one script run.
+    </p>
+    <a class="btn btn-accent" href="https://github.com/patheticGeek/SuperTheme-BeardedThemes" target="_blank" rel="noopener">View the repository</a>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>GPL-3.0 · Not affiliated with the KDE project or BeardedBear — just a fan of the colours.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

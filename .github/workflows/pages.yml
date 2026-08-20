@@ -1,0 +1,52 @@
+name: Pages
+
+# Publishes www/ to GitHub Pages. The screenshots live in docs/images/ (so the
+# README can use them too) and are copied into the site at build time rather
+# than duplicated in git -- see www/.gitignore.
+#
+# Requires Settings > Pages > Source = "GitHub Actions" (one-time, in the repo
+# settings UI).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'www/**'
+      - 'docs/images/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a newer push cancel an in-flight deploy, but never interrupt one midway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage screenshots into the site
+        run: cp -r docs/images www/images
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
